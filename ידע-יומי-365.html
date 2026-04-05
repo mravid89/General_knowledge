@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>365 ימי ידע</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;900&family=Frank+Ruhl+Libre:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #09090f;
+  --surface: #111118;
+  --card: #18181f;
+  --border: #28283a;
+  --text: #e8e8f2;
+  --muted: #666680;
+  --soft: #9999b8;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Heebo', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ═══ CATEGORY THEMES ═══ */
+.theme-מדע        { --accent:#4fc3f7; --glow:rgba(79,195,247,0.18); --dim:rgba(79,195,247,0.07); }
+.theme-היסטוריה   { --accent:#ffb74d; --glow:rgba(255,183,77,0.18);  --dim:rgba(255,183,77,0.07); }
+.theme-טבע        { --accent:#81c784; --glow:rgba(129,199,132,0.18); --dim:rgba(129,199,132,0.07); }
+.theme-גוף-האדם   { --accent:#f48fb1; --glow:rgba(244,143,177,0.18); --dim:rgba(244,143,177,0.07); }
+.theme-חלל        { --accent:#ce93d8; --glow:rgba(206,147,216,0.18); --dim:rgba(206,147,216,0.07); }
+.theme-גאוגרפיה   { --accent:#4dd0e1; --glow:rgba(77,208,225,0.18);  --dim:rgba(77,208,225,0.07); }
+.theme-מתמטיקה    { --accent:#fff176; --glow:rgba(255,241,118,0.18); --dim:rgba(255,241,118,0.07); }
+.theme-פסיכולוגיה { --accent:#f06292; --glow:rgba(240,98,146,0.18);  --dim:rgba(240,98,146,0.07); }
+.theme-טכנולוגיה  { --accent:#69f0ae; --glow:rgba(105,240,174,0.18); --dim:rgba(105,240,174,0.07); }
+.theme-כלכלה      { --accent:#ffcc02; --glow:rgba(255,204,2,0.18);   --dim:rgba(255,204,2,0.07); }
+.theme-שפה        { --accent:#b39ddb; --glow:rgba(179,157,219,0.18); --dim:rgba(179,157,219,0.07); }
+.theme-מוזיקה     { --accent:#ff8a65; --glow:rgba(255,138,101,0.18); --dim:rgba(255,138,101,0.07); }
+.theme-ספורט      { --accent:#64b5f6; --glow:rgba(100,181,246,0.18); --dim:rgba(100,181,246,0.07); }
+.theme-אוכל       { --accent:#ffab40; --glow:rgba(255,171,64,0.18);  --dim:rgba(255,171,64,0.07); }
+.theme-פילוסופיה  { --accent:#ef9a9a; --glow:rgba(239,154,154,0.18); --dim:rgba(239,154,154,0.07); }
+.theme-ביולוגיה   { --accent:#a5d6a7; --glow:rgba(165,214,167,0.18); --dim:rgba(165,214,167,0.07); }
+.theme-פיזיקה     { --accent:#90caf9; --glow:rgba(144,202,249,0.18); --dim:rgba(144,202,249,0.07); }
+.theme-כימיה      { --accent:#80cbc4; --glow:rgba(128,203,196,0.18); --dim:rgba(128,203,196,0.07); }
+
+/* ═══ VIEWS ═══ */
+.view { display:none; }
+.view.active { display:block; }
+
+/* ═══ HOME ═══ */
+#home {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  position: relative;
+  transition: background .6s;
+}
+
+#home::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background: radial-gradient(ellipse 70% 60% at 50% 40%, var(--glow, rgba(79,195,247,0.12)) 0%, transparent 70%);
+  pointer-events:none;
+  transition: background .6s;
+  z-index:0;
+}
+
+.home-inner {
+  position:relative;
+  z-index:1;
+  width:100%;
+  max-width:640px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:0;
+}
+
+/* day counter */
+.day-ring {
+  position:relative;
+  width:90px; height:90px;
+  margin-bottom:28px;
+}
+.day-ring svg { position:absolute; inset:0; }
+.day-ring .ring-text {
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+}
+.ring-num {
+  font-family:'Frank Ruhl Libre', serif;
+  font-size:1.7rem;
+  font-weight:900;
+  color: var(--accent, #4fc3f7);
+  line-height:1;
+}
+.ring-label {
+  font-size:9px;
+  color: var(--muted);
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  margin-top:2px;
+}
+
+/* category pill */
+.cat-pill {
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:5px 14px;
+  border-radius:20px;
+  border:1px solid var(--accent, #4fc3f7);
+  background: var(--dim, rgba(79,195,247,0.07));
+  color: var(--accent, #4fc3f7);
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  margin-bottom:22px;
+  transition: all .4s;
+}
+.cat-icon { font-size:14px; }
+
+/* main card */
+.fact-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--accent, #4fc3f7);
+  border-radius: 16px;
+  padding: 36px 32px;
+  text-align: center;
+  box-shadow: 0 0 60px var(--glow, rgba(79,195,247,0.1)), 0 20px 40px rgba(0,0,0,0.4);
+  width:100%;
+  transition: border-color .4s, box-shadow .4s;
+  animation: cardIn .5s cubic-bezier(.16,1,.3,1) both;
+}
+
+@keyframes cardIn {
+  from { opacity:0; transform:translateY(24px) scale(.97); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+
+.fact-text {
+  font-family: 'Frank Ruhl Libre', serif;
+  font-size: clamp(1.05rem, 2.5vw, 1.25rem);
+  line-height: 1.75;
+  color: #d8d8ee;
+  font-weight: 400;
+}
+
+.fact-footer {
+  margin-top: 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+.fact-date {
+  font-size:11px;
+  color: var(--muted);
+  letter-spacing:.05em;
+}
+
+.fact-share {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 14px;
+  color: var(--soft);
+  font-family:'Heebo',sans-serif;
+  font-size:12px;
+  cursor:pointer;
+  transition: all .2s;
+}
+.fact-share:hover { border-color: var(--accent); color: var(--accent); }
+
+/* nav dots */
+.nav-dots {
+  display:flex; gap:8px; margin-top:24px;
+}
+.dot {
+  width:7px; height:7px; border-radius:50%;
+  background: var(--border);
+  cursor:pointer;
+  transition: all .2s;
+}
+.dot.active { background: var(--accent, #4fc3f7); width:22px; border-radius:4px; }
+
+/* bottom buttons */
+.home-actions {
+  display:flex; gap:12px; margin-top:28px; flex-wrap:wrap; justify-content:center;
+}
+
+.btn-ghost {
+  padding:10px 20px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:none;
+  color: var(--soft);
+  font-family:'Heebo',sans-serif;
+  font-size:13px;
+  cursor:pointer;
+  transition:all .2s;
+  display:flex; align-items:center; gap:7px;
+}
+.btn-ghost:hover { border-color:var(--accent); color:var(--accent); background:var(--dim); }
+
+.btn-accent {
+  padding:10px 20px;
+  border-radius:10px;
+  border:none;
+  background: var(--accent, #4fc3f7);
+  color:#09090f;
+  font-family:'Heebo',sans-serif;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .2s;
+  display:flex; align-items:center; gap:7px;
+}
+.btn-accent:hover { filter:brightness(1.1); transform:translateY(-1px); }
+
+/* streak */
+.streak-bar {
+  margin-top:20px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px 20px;
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+.streak-icon { font-size:24px; }
+.streak-info { flex:1; }
+.streak-num {
+  font-family:'Frank Ruhl Libre',serif;
+  font-size:1.3rem;
+  font-weight:700;
+  color:var(--accent,#4fc3f7);
+  line-height:1;
+}
+.streak-sub { font-size:11px; color:var(--muted); margin-top:2px; }
+
+/* reminder badge */
+.reminder-badge {
+  margin-top:12px;
+  width:100%;
+  background:var(--dim,rgba(79,195,247,0.07));
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:10px;
+  padding:10px 16px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:12px;
+  color:var(--soft);
+  cursor:pointer;
+  transition:all .2s;
+}
+.reminder-badge:hover { border-color:var(--accent); }
+.reminder-badge .rb-time { color:var(--accent); font-weight:700; }
+
+/* ═══ ALL FACTS VIEW ═══ */
+#allFacts {
+  max-width:1380px;
+  margin:0 auto;
+  padding:24px 18px 60px;
+}
+
+.view-header {
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:24px;
+  padding-bottom:16px;
+  border-bottom:1px solid var(--border);
+  flex-wrap:wrap;
+}
+.view-header h2 {
+  font-family:'Frank Ruhl Libre',serif;
+  font-size:1.4rem;
+  font-weight:700;
+  flex:1;
+}
+
+.search-wrap { position:relative; }
+.search-wrap input {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:9px 14px 9px 36px;
+  color:var(--text);
+  font-family:'Heebo',sans-serif;
+  font-size:13px;
+  outline:none;
+  width:220px;
+  transition:border .2s;
+}
+.search-wrap input:focus { border-color:var(--accent,#4fc3f7); }
+.search-wrap input::placeholder { color:var(--muted); }
+.search-ico { position:absolute; left:11px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:13px; pointer-events:none; }
+
+.facts-grid {
+  columns:320px;
+  column-gap:14px;
+}
+.mini-card {
+  break-inside:avoid;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:14px 16px;
+  margin-bottom:12px;
+  transition:box-shadow .2s, transform .2s;
+  cursor:default;
+  position:relative;
+}
+.mini-card:hover { box-shadow:0 4px 20px rgba(0,0,0,0.3); transform:translateY(-2px); }
+.mini-day { font-size:10px; color:var(--muted); margin-bottom:4px; }
+.mini-cat {
+  display:inline-block;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+  padding:2px 7px;
+  border-radius:4px;
+  margin-bottom:7px;
+}
+.mini-text { font-size:13px; line-height:1.6; color:#b8b8d0; }
+
+/* ═══ SETTINGS VIEW ═══ */
+#settings {
+  max-width:520px;
+  margin:0 auto;
+  padding:28px 20px 60px;
+}
+
+.settings-section {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:22px;
+  margin-bottom:16px;
+}
+.settings-section h3 {
+  font-size:.85rem;
+  font-weight:700;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:18px;
+  padding-bottom:10px;
+  border-bottom:1px solid var(--border);
+}
+
+.setting-row {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:10px 0;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.setting-row:last-child { border-bottom:none; }
+.setting-label { font-size:14px; color:var(--text); }
+.setting-sub { font-size:11px; color:var(--muted); margin-top:2px; }
+
+/* time picker */
+.time-pick {
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.time-num {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:8px 10px;
+  color:var(--text);
+  font-family:'Heebo',sans-serif;
+  font-size:1.1rem;
+  font-weight:700;
+  width:58px;
+  text-align:center;
+  outline:none;
+  transition:border .2s;
+}
+.time-num:focus { border-color:#4fc3f7; }
+.time-sep { font-size:1.3rem; color:var(--muted); font-weight:700; }
+
+/* toggle */
+.toggle-wrap { position:relative; width:46px; height:26px; flex-shrink:0; }
+.toggle-wrap input { opacity:0; width:0; height:0; position:absolute; }
+.toggle-slider {
+  position:absolute; inset:0;
+  background:var(--border);
+  border-radius:26px;
+  cursor:pointer;
+  transition:.3s;
+}
+.toggle-slider::after {
+  content:'';
+  position:absolute;
+  left:4px; top:4px;
+  width:18px; height:18px;
+  border-radius:50%;
+  background:#fff;
+  transition:.3s;
+}
+.toggle-wrap input:checked + .toggle-slider { background:#4fc3f7; }
+.toggle-wrap input:checked + .toggle-slider::after { transform:translateX(20px); }
+
+/* save btn */
+.save-btn {
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:none;
+  background:#4fc3f7;
+  color:#09090f;
+  font-family:'Heebo',sans-serif;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .2s;
+  margin-top:8px;
+}
+.save-btn:hover { filter:brightness(1.08); transform:translateY(-1px); }
+
+/* ═══ NAV BAR ═══ */
+.navbar {
+  position:fixed;
+  bottom:0; left:0; right:0;
+  background:rgba(9,9,15,0.96);
+  backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);
+  display:flex;
+  z-index:100;
+}
+.nav-item {
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:3px;
+  padding:10px 0 14px;
+  cursor:pointer;
+  transition:color .2s;
+  color:var(--muted);
+  font-size:10px;
+  letter-spacing:.04em;
+  border:none;
+  background:none;
+  font-family:'Heebo',sans-serif;
+}
+.nav-item .nav-ico { font-size:20px; }
+.nav-item.active { color:#4fc3f7; }
+
+/* ═══ TOAST ═══ */
+.toast {
+  position:fixed;
+  bottom:80px; left:50%; transform:translateX(-50%) translateY(20px);
+  background:#18181f;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px 20px;
+  font-size:13px;
+  color:var(--text);
+  opacity:0;
+  transition:all .3s;
+  z-index:999;
+  white-space:nowrap;
+  pointer-events:none;
+}
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* padding for navbar */
+main { padding-bottom: 70px; }
+</style>
+</head>
+<body>
+<main>
+
+<!-- ══════ HOME VIEW ══════ -->
+<div id="home" class="view active theme-מדע">
+  <div class="home-inner">
+    <div class="day-ring">
+      <svg viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="45" cy="45" r="40" stroke="#28283a" stroke-width="5"/>
+        <circle cx="45" cy="45" r="40" id="ringProgress"
+          stroke="#4fc3f7" stroke-width="5"
+          stroke-dasharray="251.2" stroke-dashoffset="0"
+          stroke-linecap="round"
+          transform="rotate(-90 45 45)"
+          style="transition:stroke-dashoffset .8s ease, stroke .4s"/>
+      </svg>
+      <div class="ring-text">
+        <span class="ring-num" id="dayNum">1</span>
+        <span class="ring-label">יום</span>
+      </div>
+    </div>
+
+    <div class="cat-pill" id="catPill">
+      <span class="cat-icon" id="catIcon">🔬</span>
+      <span id="catName">מדע</span>
+    </div>
+
+    <div class="fact-card" id="factCard">
+      <p class="fact-text" id="factText">טוען עובדת היום...</p>
+      <div class="fact-footer">
+        <span class="fact-date" id="factDateLabel"></span>
+        <button class="fact-share" onclick="shareToday()">📋 העתק</button>
+      </div>
+    </div>
+
+    <div class="nav-dots" id="navDots"></div>
+
+    <div class="home-actions">
+      <button class="btn-ghost" onclick="prevFact()">← אתמול</button>
+      <button class="btn-ghost" onclick="showView('allFacts')">📚 כל העובדות</button>
+      <button class="btn-ghost" onclick="nextFact()">מחר →</button>
+    </div>
+
+    <div class="streak-bar">
+      <span class="streak-icon">🔥</span>
+      <div class="streak-info">
+        <div class="streak-num" id="streakNum">0</div>
+        <div class="streak-sub">ימים ברצף</div>
+      </div>
+      <div style="font-size:11px; color:var(--muted); text-align:left">
+        סה"כ נצפו<br>
+        <strong id="totalSeen" style="color:var(--soft)">0</strong> עובדות
+      </div>
+    </div>
+
+    <div class="reminder-badge" id="reminderBadge" onclick="showView('settings')">
+      <span>🔔</span>
+      <span>תזכורת יומית: <span class="rb-time" id="reminderDisplay">לא הוגדר</span></span>
+      <span style="margin-right:auto; color:var(--muted); font-size:11px">שנה ←</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ ALL FACTS VIEW ══════ -->
+<div id="allFacts" class="view" style="padding-top:20px;">
+  <div id="allFacts" style="max-width:1380px;margin:0 auto;padding:20px 18px 60px;">
+    <div class="view-header">
+      <button class="btn-ghost" onclick="showView('home')" style="padding:8px 12px;">← חזרה</button>
+      <h2>כל 365 העובדות</h2>
+      <div class="search-wrap">
+        <span class="search-ico">🔍</span>
+        <input type="text" id="searchInput" placeholder="חפש עובדה..." oninput="filterFacts()">
+      </div>
+    </div>
+    <div class="facts-grid" id="factsGrid"></div>
+    <div id="noResults" style="display:none;text-align:center;padding:60px;color:var(--muted);">😕 לא נמצאו תוצאות</div>
+  </div>
+</div>
+
+<!-- ══════ SETTINGS VIEW ══════ -->
+<div id="settings" class="view">
+  <div style="max-width:520px;margin:0 auto;padding:28px 20px 60px;">
+    <div class="view-header">
+      <button class="btn-ghost" onclick="showView('home')" style="padding:8px 12px;">← חזרה</button>
+      <h2>הגדרות</h2>
+    </div>
+
+    <div class="settings-section">
+      <h3>🔔 תזכורת יומית</h3>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">הפעל תזכורת</div>
+          <div class="setting-sub">קבל תזכורת לפתוח את האפליקציה</div>
+        </div>
+        <label class="toggle-wrap">
+          <input type="checkbox" id="reminderEnabled" onchange="toggleReminder()">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="setting-row" id="timeRow" style="opacity:.4; pointer-events:none;">
+        <div>
+          <div class="setting-label">שעת תזכורת</div>
+        </div>
+        <div class="time-pick">
+          <input type="number" class="time-num" id="reminderHour" value="08" min="0" max="23" onchange="padTime(this)">
+          <span class="time-sep">:</span>
+          <input type="number" class="time-num" id="reminderMin" value="00" min="0" max="59" onchange="padTime(this)">
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h3>📊 סטטיסטיקה</h3>
+      <div class="setting-row">
+        <span class="setting-label">ימים ברצף</span>
+        <span id="statStreak" style="color:#4fc3f7;font-weight:700;">0</span>
+      </div>
+      <div class="setting-row">
+        <span class="setting-label">עובדות שנצפו</span>
+        <span id="statSeen" style="color:#4fc3f7;font-weight:700;">0</span>
+      </div>
+      <div class="setting-row">
+        <span class="setting-label">יום נוכחי בשנה</span>
+        <span id="statDay" style="color:#4fc3f7;font-weight:700;">0</span>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h3>🔄 איפוס</h3>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">איפוס נתוני שימוש</div>
+          <div class="setting-sub">מחיקת סטריק ועובדות שנצפו</div>
+        </div>
+        <button class="btn-ghost" onclick="resetData()" style="color:#f48fb1;border-color:#f48fb1;font-size:12px;padding:7px 14px;">איפוס</button>
+      </div>
+    </div>
+
+    <button class="save-btn" onclick="saveSettings()">💾 שמור הגדרות</button>
+  </div>
+</div>
+
+</main>
+
+<!-- NAV BAR -->
+<nav class="navbar">
+  <button class="nav-item active" id="nav-home" onclick="showView('home')">
+    <span class="nav-ico">🏠</span>היום
+  </button>
+  <button class="nav-item" id="nav-allFacts" onclick="showView('allFacts')">
+    <span class="nav-ico">📚</span>כל העובדות
+  </button>
+  <button class="nav-item" id="nav-settings" onclick="showView('settings')">
+    <span class="nav-ico">⚙️</span>הגדרות
+  </button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════
+// 365 FACTS — one per day, cycling through categories
+// ═══════════════════════════════════════════════
+const FACTS = [
+  // 1–20 מדע
+  {c:"מדע",e:"🔬",t:"מהירות האור בוואקום היא 299,792,458 מטר לשנייה — ערך זה מוגדר כקבוע פיזיקלי ומשמש להגדרת המטר עצמו."},
+  {c:"מדע",e:"🔬",t:"טמפרטורת האפס המוחלט היא מינוס 273.15°C. בטמפרטורה זו תנועה תרמית של חלקיקים מגיעה למינימומה ולא ניתן לקרר יותר."},
+  {c:"מדע",e:"🔬",t:"ניסוי מיכלסון-מורלי (1887) ניסה למדוד את 'האתר' ונכשל — הוכיח שמהירות האור קבועה בכל כיוון, ובסס את תורת היחסות של איינשטיין."},
+  {c:"מדע",e:"🔬",t:"כוח הכבידה נע במהירות האור. שינוי במסה של גוף מרוחק ישפיע על שדה הכבידה רק לאחר שאות הכבידה יגיע אליו — לא באופן מיידי."},
+  {c:"מדע",e:"🔬",t:"פניצילין התגלה ב-1928 על ידי אלכסנדר פלמינג בטעות — הוא שם לב שעובש שגדל על צלחת מעכב גדילת חיידקים סביבו."},
+  {c:"מדע",e:"🔬",t:"גלי רדיו, אינפרא-אדום, אור נראה, UV, קרינת X וגאמה — כולן גלים אלקטרומגנטיים. ההבדל היחיד הוא האורך-גל."},
+  {c:"מדע",e:"🔬",t:"חמצן נוזלי הוא בעל גוון כחלחל. בצורתו הגזית הוא חסר צבע, אך במצב נוזלי מולקולות O₂ סופחות אור אדום-כתום ומחזירות כחול."},
+  {c:"מדע",e:"🔬",t:"החוק הראשון של תרמודינמיקה קובע שאנרגיה לעולם אינה נוצרת ואינה נהרסת — היא רק מומרת מצורה לצורה אחרת."},
+  {c:"מדע",e:"🔬",t:"מים רותחים יכולים להקפיא מהר יותר ממים קרים בתנאים מסוימים — תופעה הידועה כאפקט מפמבה, שתועדה לראשונה ב-1963."},
+  {c:"מדע",e:"🔬",t:"ה-pH של מיץ קיבה הוא 1.5–3.5 — חומצי מספיק כדי להמיס ברזל. הרירית מתחדשת כל 3–5 ימים כדי למנוע עיכול עצמי."},
+  {c:"מדע",e:"🔬",t:"ניסוי שני-הסדקים של תומס יאנג (1801) הוכיח שאור מתנהג כגל — הוא יוצר דפוס הפרעה כשעובר דרך שני חרצים צרים."},
+  {c:"מדע",e:"🔬",t:"פולימרים כמו פלסטיק מורכבים ממאות אלפי מולקולות זהות (מונומרים) הקשורות בשרשרת. ניילון הומצא ב-1935 בחברת דופונט."},
+  {c:"מדע",e:"🔬",t:"כוח הציפה (עקרון ארכימדס) שווה למשקל הנוזל המוזזה — עיקרון שהוביל את ארכימדס לזעוק 'יוּרֵקָא' כשנכנס לאמבטיה."},
+  {c:"מדע",e:"🔬",t:"לחץ אטמוספרי על כל סנטימטר רבוע מהגוף הוא כ-1 ק\"ג. איננו מרגישים זאת כי הלחץ הפנימי מאזן אותו בדיוק."},
+  {c:"מדע",e:"🔬",t:"קרינת רנטגן התגלתה ב-1895 על ידי וילהלם רנטגן בטעות — צינור ואקום הפך מסך פלואורסצנטי ל-bright בחדר אפל."},
+  {c:"מדע",e:"🔬",t:"גרעיני האטום מוחזקים על ידי הכוח הגרעיני החזק — אחד מארבעת הכוחות הבסיסיים בטבע, והחזק ביותר מכולם בטווח קצר."},
+  {c:"מדע",e:"🔬",t:"מולקולת המים (H₂O) היא דיפולרית — חמצן שולף אלקטרונים חזק יותר ממימן, מה שיוצר מטען שלילי חלקי בצד החמצן."},
+  {c:"מדע",e:"🔬",t:"הכוח הנוקלארי החלש אחראי לדעיכה רדיואקטיבית בטא — פרוטון הופך לניוטרון עם פליטת אלקטרון, ולהפך."},
+  {c:"מדע",e:"🔬",t:"AM חוזר מהיונוספירה ומגיע למרחקים גדולים, FM אינו — לכן AM שידורים נשמעים גם ממדינות מרוחקות בלילה."},
+  {c:"מדע",e:"🔬",t:"המאגנטיזם והחשמל הם ביטוי אחד של אותו כוח — אלקטרומגנטיזם. מקסוול הוכיח זאת ב-1865 עם ארבע משוואותיו המפורסמות."},
+  // 21–40 היסטוריה
+  {c:"היסטוריה",e:"📜",t:"קיסרות רומא המערבית נפלה ב-476 לספירה, אך הביזנטית (המזרחית) המשיכה לקיים עד 1453 — יותר מאלף שנה נוספות."},
+  {c:"היסטוריה",e:"📜",t:"המגנה קרטה נחתמה ב-1215 על ידי המלך ג'ון של אנגליה — הגבילה לראשונה את כוחו של המלך ונחשבת לבסיס הדמוקרטיה המודרנית."},
+  {c:"היסטוריה",e:"📜",t:"פסטס הבובוני (המגפה השחורה) הרגה בין שליש למחצית מאוכלוסיית אירופה בין 1347 ל-1351 — כ-25 מיליון איש."},
+  {c:"היסטוריה",e:"📜",t:"אלכסנדר הגדול כבש שטח של 5 מיליון קמ\"ר עד גיל 30 — מיוון ועד הודו — ולא הפסיד ולו קרב אחד בחייו."},
+  {c:"היסטוריה",e:"📜",t:"קולומבוס לא הוכיח שהארץ עגולה — עובדה זו הייתה ידועה ליוונים. ארטוסתנס חישב את היקפה בדיוק יחסי כבר ב-240 לפנה\"ס."},
+  {c:"היסטוריה",e:"📜",t:"יוליוס קיסר נרצח ב-15 במרץ 44 לפנה\"ס על ידי קבוצת סנאטורים, שדקרו אותו 23 פעמים. רק אחת הדקירות הייתה קטלנית."},
+  {c:"היסטוריה",e:"📜",t:"פרויקט מנהטן העסיק יותר מ-130,000 איש בשיאו ועלה כ-2 מיליארד דולר — שווה ערך ל-30 מיליארד דולר כיום."},
+  {c:"היסטוריה",e:"📜",t:"כתב-יתד (קוניפורם) הסומרי הוא אחד הכתבים הקדומים בעולם, מתוארך לכ-3400 לפנה\"ס. שימש בעיקר לתיעוד עסקאות מסחריות."},
+  {c:"היסטוריה",e:"📜",t:"האימפריה המונגולית הייתה הגדולה ביבשה בהיסטוריה — בשיאה ב-1270 השתרעה על 24 מיליון קמ\"ר."},
+  {c:"היסטוריה",e:"📜",t:"הסכם וורסאי (1919) הטיל על גרמניה אחריות בלעדית למלחמת העולם הראשונה ופיצויים ענקיים — תנאים שתרמו לעלייתו של הנאציזם."},
+  {c:"היסטוריה",e:"📜",t:"מגפת השפעת הספרדית (1918–1919) הרגה 50–100 מיליון איש — יותר מכל הנספים במלחמת העולם הראשונה."},
+  {c:"היסטוריה",e:"📜",t:"קבר פרעה תות-עאנח-אמון התגלה ב-1922 על ידי הווארד קרטר כמעט שלם ללא פריצה — אחד הגילויים הארכאולוגיים הנדירים ביותר."},
+  {c:"היסטוריה",e:"📜",t:"ספינת הטיטאניק טבעה ב-15 באפריל 1912, שעתיים ו-40 דקות לאחר פגיעה בקרחון. כ-1,500 מ-2,224 נוסעים נהרגו."},
+  {c:"היסטוריה",e:"📜",t:"נפילת חומת ברלין ב-9 בנובמבר 1989 הייתה אחד האירועים הסמליים ביותר של המאה ה-20, וסימנה סוף המלחמה הקרה."},
+  {c:"היסטוריה",e:"📜",t:"המהפכה הצרפתית (1789–1799) הביאה לביטול המלוכה וקיצוץ ראשו של לואי ה-16 ב-1793, ולבסוף לעלייתו של נפוליאון."},
+  {c:"היסטוריה",e:"📜",t:"בניית הגדר הסינית הגדולה נמשכה מאות שנים על פני שושלות שונות. חלקים גדולים ממנה נבנו בתקופת שושלת מינג (1368–1644)."},
+  {c:"היסטוריה",e:"📜",t:"המהפכה התעשייתית עקרה מיליוני אנשים מהכפר לעיר. ב-1800 פחות מ-3% מאוכלוסיית העולם גרו בערים — כיום מעל 55%."},
+  {c:"היסטוריה",e:"📜",t:"ENIAC — המחשב האלקטרוני הראשון — הושק ב-1945, שקל 27 טון, תפס 167 מ\"ר ויכול לבצע 5,000 חיבורים בשנייה."},
+  {c:"היסטוריה",e:"📜",t:"ה-ARPANET שלח את ההודעה הראשונה ב-29 באוקטובר 1969: המילה 'LOGIN'. המערכת קרסה לאחר שתי אותיות — L ו-O."},
+  {c:"היסטוריה",e:"📜",t:"מרוץ לחלל הסתיים ב-20 ביולי 1969 כשנייל ארמסטרונג ובז' אולדרין הנחיתו על הירח. ארמסטרונג היה הראשון לדרוך עליו."},
+  // 41–60 טבע
+  {c:"טבע",e:"🌿",t:"עצי הסקוויה הענקים הם הצמחים הגדולים ביותר לפי נפח. 'הגנרל שרמן' בקליפורניה שוקל כ-1,385 טון — גדול מכל בעל-חיים שחי."},
+  {c:"טבע",e:"🌿",t:"דולפינים ישנים עם חצי מוחם בלבד — מחצית תמיד ערה כדי לנשום ולהישאר עירנים. זוהי שינה אוניהמיספרית."},
+  {c:"טבע",e:"🌿",t:"תמנון יכול לשנות צבע ומרקם בתוך שבריר שנייה. הוא צבע-עיוור לרוב, ובכל זאת משיג הסוואה מושלמת."},
+  {c:"טבע",e:"🌿",t:"דבורות מבצעות 'ריקוד נדנדה' כדי להעביר מידע מדויק על מיקום ואיכות מקורות מזון. זווית הריקוד מייצגת כיוון ביחס לשמש."},
+  {c:"טבע",e:"🌿",t:"מסלעת האלמוגים הגדולה האוסטרלית היא המבנה הביולוגי הגדול ביותר בכדור הארץ ונראית מהחלל — אורכה 2,300 ק\"מ."},
+  {c:"טבע",e:"🌿",t:"לוויתן הכחול הוא בעל-החיים הגדול ביותר שחי. לבו לבדו שוקל כ-400 ק\"ג — בגודל של מכונית קטנה — ופועם פעמים בודדות בדקה."},
+  {c:"טבע",e:"🌿",t:"צמחים מקיימים תקשורת כימית — כשעץ מותקף על ידי חרקים, הוא משחרר חומרים נדיפים המתריעים לעצים שכנים להפיק רעלים."},
+  {c:"טבע",e:"🌿",t:"חיית הטרדיגרדה (דוב-מים) יכולה לשרוד בוואקום, בקרינה גבוהה, ובטמפרטורות בין מינוס 272 ל-150 מעלות צלזיוס."},
+  {c:"טבע",e:"🌿",t:"ציפורת הזעיר היא הציפור היחידה שיכולה לעוף אחורה — היא מניפה כנפיה בין 50 ל-80 פעמים בשנייה."},
+  {c:"טבע",e:"🌿",t:"עצי הבאובאב באפריקה יכולים לאחסן עד 120,000 ליטר מים בגזעם הרחב — התאמה לחיים בסביבה יבשה."},
+  {c:"טבע",e:"🌿",t:"יערות הגשם הטרופיים מכסים כ-6% משטח כדור הארץ אך מכילים יותר מ-50% מהמינים הביולוגיים המוכרים."},
+  {c:"טבע",e:"🌿",t:"ג'לי-פיש (מדוזה) היא כ-95% מים, ללא מוח, לב, ריאות או עצמות — ובכל זאת קיימת כ-500 מיליון שנה לפני הדינוזאורים."},
+  {c:"טבע",e:"🌿",t:"רוב הפטריות אינן צמחים ואינן בעלי-חיים — הן ממלכה נפרדת. גנטית הן קרובות יותר לבעלי-חיים מאשר לצמחים."},
+  {c:"טבע",e:"🌿",t:"כריש הלוויתן הוא הדג הגדול ביותר בעולם (עד 18 מטר). אף על פי כן, הוא ניזון מפלנקטון קטנטן דרך סינון מים."},
+  {c:"טבע",e:"🌿",t:"הנמר השלג אינו מסוגל לשאוג — העצם ההיפרואידית שלו גמישה מדי. במקום זאת הוא מגרגר כמו חתול ביתי."},
+  {c:"טבע",e:"🌿",t:"עצים ביער מקיימים תקשורת דרך רשת פטריות תת-קרקעית — מעבירים חומרים מזינים ואותות כימיים לעצים שכנים."},
+  {c:"טבע",e:"🌿",t:"בעונת ההגירה, ציפורי הסטרנה הארקטית עוברות כ-70,000 ק\"מ — הגדולה ביותר מכל בעל-חיים על פני כדור הארץ."},
+  {c:"טבע",e:"🌿",t:"נחש המלך (King Cobra) הוא הנחש הארסי הארוך ביותר — עד 5.5 מ'. ארסו יכול להרוג פיל בתוך שעות."},
+  {c:"טבע",e:"🌿",t:"מבנה הכוורת (שישה-צלעות) הוא היעיל ביותר מבחינת שימוש בחומר — מכסה שטח מירבי בכמות שעווה מינימלית."},
+  {c:"טבע",e:"🌿",t:"תמנון המלך הזכר מת זמן קצר לאחר ההזדווגות. הנקבה שומרת על הביצים ואינה אוכלת כלל עד שהן בוקעות."},
+  // 61–80 גוף האדם
+  {c:"גוף-האדם",e:"🫀",t:"הלב פועם כ-100,000 פעמים ביום ומשאב כ-7,570 ליטר דם. לאורך 80 שנה זה כ-3 מיליארד פעימות."},
+  {c:"גוף-האדם",e:"🫀",t:"למוח האנושי יש כ-86 מיליארד נוירונים ו-100 טריליון חיבורים סינפטיים. מספר החיבורים גדול ממספר כוכבי היקום הנצפה."},
+  {c:"גוף-האדם",e:"🫀",t:"העור הוא האיבר הגדול ביותר בגוף — שטחו כ-1.8 מ\"ר, משקלו כ-5 ק\"ג, ומתחדש לחלוטין כל 2–4 שבועות."},
+  {c:"גוף-האדם",e:"🫀",t:"גוף האדם מכיל כ-37 טריליון תאים. כ-330 מיליארד מהם מוחלפים בכל יום — בעיקר תאי דם אדומים ותאי עור."},
+  {c:"גוף-האדם",e:"🫀",t:"כלי הדם של גוף בוגר — עורקים, ורידים, ונימים — יגיעו לאורך של כ-100,000 ק\"מ — פי 2.5 היקף כדור הארץ."},
+  {c:"גוף-האדם",e:"🫀",t:"לתינוקות יש 270–300 עצמות לעומת 206 אצל מבוגרים — הפרש נוצר כשעצמות קטנות מתמזגות בגיל ההתבגרות."},
+  {c:"גוף-האדם",e:"🫀",t:"הכבד מבצע יותר מ-500 תפקודים: ייצור מרה, פירוק רעלים, אחסון גליקוגן, וסינתזה של חלבוני פלסמה."},
+  {c:"גוף-האדם",e:"🫀",t:"ריאות אנוש, אם נפרש אותן לחלוטין, ישתרעו על שטח של כ-70 מ\"ר — כגודל דירה קטנה — הודות למבנה האלוואולי."},
+  {c:"גוף-האדם",e:"🫀",t:"כ-60% ממשקל גוף האדם הוא מים. המוח מורכב מ-75% מים, ואפילו העצמות מכילות כ-22% מים."},
+  {c:"גוף-האדם",e:"🫀",t:"קצב ייצור תאי הדם האדומים הוא כ-2 מיליון תאים בשנייה — כולם מיוצרים בתוך מח העצם בעצמות שטוחות."},
+  {c:"גוף-האדם",e:"🫀",t:"שריר הלסת הוא החזק ביותר יחסית לגודלו — יכול לסגור בכוח של עד 77 ק\"ג. הלשון, לעומת זאת, היא השריר הגמיש ביותר."},
+  {c:"גוף-האדם",e:"🫀",t:"הקורנאה (קרנית העין) היא הרקמה היחידה בגוף שאין לה אספקת דם ישירה — מקבלת חמצן ישירות מהאוויר ומהדמעות."},
+  {c:"גוף-האדם",e:"🫀",t:"כ-8% מהגנום האנושי מורכב מ-DNA וירוסי שהשתלב בגנום אבות קדומינו לפני מיליוני שנים."},
+  {c:"גוף-האדם",e:"🫀",t:"האוזן הפנימית מעבדת קולות לאותות חשמליים. תאי השיער שבה אינם מתחדשים — לכן אובדן שמיעה מרעש הוא בלתי הפיך."},
+  {c:"גוף-האדם",e:"🫀",t:"בשינה עמוקה, המוח מנקה פסולת מטבולית דרך מערכת הגלימפתית — תהליך שקושר להפחתת הסיכון למחלת האלצהיימר."},
+  {c:"גוף-האדם",e:"🫀",t:"הגנים המקודדים חלבונים מהווים פחות מ-2% מהגנום האנושי. שאר ה-98% כוללים רצפים רגולטוריים ו-RNA לא-מקודד."},
+  {c:"גוף-האדם",e:"🫀",t:"DNA אנושי מכיל כ-3 מיליארד זוגות בסיסים. אם נפרש ה-DNA מתא אחד בקו ישר, הוא יגיע לאורך של כ-2 מטר."},
+  {c:"גוף-האדם",e:"🫀",t:"אמייל השיניים הוא החומר הקשה ביותר בגוף — קשה יותר מעצם, אך שביר יותר ממנה. ניזוק לצמיתות כשנשחק."},
+  {c:"גוף-האדם",e:"🫀",t:"גוף האדם מייצר כ-1–1.5 ליטר רוק ביום. הרוק מכיל אנזימים המתחילים עיכול עמילנים כבר בפה."},
+  {c:"גוף-האדם",e:"🫀",t:"תאי העצבים (נוירונים) הם בין ארוכי-החיים בגוף — חלקם מלווים אותנו מלידה ועד המוות ואינם מתחדשים כלל."},
+  // 81–100 חלל
+  {c:"חלל",e:"🌌",t:"השמש מכילה 99.86% מכלל המסה של מערכת השמש. כל הכוכבי-לכת יחד מהווים רק 0.14%."},
+  {c:"חלל",e:"🌌",t:"האור מהשמש לוקח כ-8 דקות ו-20 שניות להגיע לכדור הארץ. אור מהכוכב הקרוב ביותר לוקח 4.2 שנה."},
+  {c:"חלל",e:"🌌",t:"כוכב הנוגה מסתובב על צירו בכיוון הפוך לרוב הכוכבים. יום אחד על נוגה ארוך יותר משנה אחת על נוגה."},
+  {c:"חלל",e:"🌌",t:"כוכבי-הנייטרונים הם הצפופים ביותר בין הגופים הנראים — כפית אחת של חומר ניוטרוני תשקול כמיליארד טון."},
+  {c:"חלל",e:"🌌",t:"הירח מתרחק מכדור הארץ בקצב של כ-3.8 ס\"מ בשנה — כתוצאה מהאינטראקציה הגאות-כוחנית."},
+  {c:"חלל",e:"🌌",t:"שבתאי היה צף על פני מים — צפיפותו הממוצעת (0.69 גרם/סמ\"ק) נמוכה מצפיפות המים (1 גרם/סמ\"ק)."},
+  {c:"חלל",e:"🌌",t:"יש ביקום יותר כוכבים מגרגרי חול על כל חופי כדור הארץ — כ-10²⁴ כוכבים ביקום הנצפה."},
+  {c:"חלל",e:"🌌",t:"תחנת החלל הבינלאומית (ISS) מסתובבת סביב כדור הארץ כ-15.5 פעמים ביום במהירות של כ-27,600 קמ\"ש."},
+  {c:"חלל",e:"🌌",t:"אנרגיה אפלה ועניין אפל מהווים יחד כ-95% מתכולת היקום — החומר הנראה שאנחנו מכירים הוא רק 5%."},
+  {c:"חלל",e:"🌌",t:"נבולת האוריון היא אחד האזורים הפעילים ביותר לתצורת כוכבים בשביל החלב — במרחק 1,344 שנות-אור."},
+  {c:"חלל",e:"🌌",t:"לצדק יש יותר מ-95 ירחים מוכרים. גניאמד, הגדול שבהם, גדול יותר מכוכב-הלכת חמה."},
+  {c:"חלל",e:"🌌",t:"פולסרים הם כוכבי נוטרון המסתובבים במהירות עצומה — משדרים קרינה בדיוק כמו שעון אטומי, ושימשו בניסויי יחסות."},
+  {c:"חלל",e:"🌌",t:"חגורת האסטרואידים בין מאדים לצדק אינה צפופה — מרחק ממוצע בין אסטרואיד לאסטרואיד הוא כ-1 מיליון ק\"מ."},
+  {c:"חלל",e:"🌌",t:"כוכב שמש מייצר אנרגיה דרך היתוך גרעיני — בכל שנייה ממיר 600 מיליון טון מימן להליום ומשחרר אנרגיה עצומה."},
+  {c:"חלל",e:"🌌",t:"'גרנד טור' של וויאג'ר 2 (1977–1989) ניצל ישור פלנטרי נדיר שחוזר כל 175 שנה לביקור ביופיטר, שבתאי, אורנוס ונפטון."},
+  {c:"חלל",e:"🌌",t:"הביג-בנג אינו פיצוץ של חומר בתוך חלל ריק — הוא התפשטות המרחב עצמו, שהחלה לפני כ-13.8 מיליארד שנה."},
+  {c:"חלל",e:"🌌",t:"גלי כבידה התגלו לראשונה ב-2015 ע\"י LIGO — נוצרו מהיתכות שני חורים שחורים לפני 1.3 מיליארד שנה."},
+  {c:"חלל",e:"🌌",t:"מאדים הוא ביתו של הר הגעש הגבוה ביותר במערכת השמש — אולימפוס מונס, בגובה 22 ק\"מ — פי 2.5 מהאוורסט."},
+  {c:"חלל",e:"🌌",t:"הר הגעש Io על ירח צדק הוא הגוף הגיאולוגי הפעיל ביותר במערכת השמש — מאות הרי-געש פעילים."},
+  {c:"חלל",e:"🌌",t:"אורנוס מסתובב על צידו — ציר הסיבוב שלו נוטה כמעט 98 מעלות. ייתכן שהתנגשות ענקית הפכה אותו."},
+  // 101–115 גאוגרפיה
+  {c:"גאוגרפיה",e:"🌍",t:"האנטארקטיקה מכילה כ-60% ממי המתוק הזמינים בכדור הארץ, כולה בצורת קרח."},
+  {c:"גאוגרפיה",e:"🌍",t:"ים המלח, 430 מ' מתחת לפני הים, הוא המקום השפל ביותר על פני כדור הארץ. מלחיותו גבוהה פי 10 מאוקיינוס רגיל."},
+  {c:"גאוגרפיה",e:"🌍",t:"האוקיינוס השקט גדול מכל שטחי היבשה גם יחד. עומקו הגדול ביותר, שוחת מריאנה, הוא 11,034 מ'."},
+  {c:"גאוגרפיה",e:"🌍",t:"נהר האמזון אחראי לכ-20% מכלל המים המתוקים שזורמים לאוקיינוסים. בפי שפכו רחב עד 80 ק\"מ בעונת גשמים."},
+  {c:"גאוגרפיה",e:"🌍",t:"קנדה היא המדינה עם קו-החוף הארוך ביותר — 202,080 ק\"מ, כולל איים ארקטיים."},
+  {c:"גאוגרפיה",e:"🌍",t:"הר אוורסט גדל כ-4 מ\"מ בשנה — לוח ההודי ממשיך לדחוף אל תוך לוח האסיאתי. מדידות GPS מאששות זאת."},
+  {c:"גאוגרפיה",e:"🌍",t:"הסהרה היא המדבר החם הגדול ביותר — שטחו גדול מארה\"ב. אך 25% ממנו בלבד הוא חול; השאר סלע וחצץ."},
+  {c:"גאוגרפיה",e:"🌍",t:"אינדונזיה מורכבת מיותר מ-17,000 איים, וכ-6,000 מהם מיושבים. היא פרוסה על טווח קרוב לרוחבה של ארה\"ב."},
+  {c:"גאוגרפיה",e:"🌍",t:"אוסטרליה היא היבשת השטוחה ביותר בממוצע — ממוצע הגובה שלה הוא 330 מ' מעל פני הים בלבד."},
+  {c:"גאוגרפיה",e:"🌍",t:"כנרת היא ימת המים המתוקים הנמוכה ביותר בעולם — 209 מ' מתחת לפני הים — ומשמשת כמאגר מים עיקרי לישראל."},
+  {c:"גאוגרפיה",e:"🌍",t:"הנקודה הרחוקה ביותר מכל ים ביבשה נמצאת באזור שינג'יאנג שבסין — 2,645 ק\"מ מהים הקרוב ביותר."},
+  {c:"גאוגרפיה",e:"🌍",t:"נהר הנילוס (6,650 ק\"מ) ונהר האמזון (6,400 ק\"מ) מתחרים על תואר הנהר הארוך ביותר בעולם — המחלוקת בשאלת נקודת המוצא."},
+  {c:"גאוגרפיה",e:"🌍",t:"רוסיה היא המדינה הגדולה ביותר בשטחה — 17.1 מיליון קמ\"ר — ומשתרעת על 11 אזורי זמן."},
+  {c:"גאוגרפיה",e:"🌍",t:"ניו זילנד הייתה אחת מהיבשות האחרונות שנתיישבו — הפולינזים הגיעו לשם רק כ-700 שנה לפני הנוצרים."},
+  {c:"גאוגרפיה",e:"🌍",t:"איסלנד יושבת בדיוק על גבול שני לוחות טקטוניים — אמריקאי ואירופי — הנפרדים ב-2.5 ס\"מ בשנה."},
+  // 116–130 מתמטיקה
+  {c:"מתמטיקה",e:"📐",t:"מספר π הוא אי-רציונלי ואי-אלגברי — ספרותיו אחרי הנקודה אינן חוזרות לעולם ולא ניתן לבטאו כשורש של פולינום."},
+  {c:"מתמטיקה",e:"📐",t:"0.999... שווה בדיוק ל-1. זה לא קירוב — אלה שתי ייצוגים שונים לאותו מספר, כפי שניתן להוכיח עם אלגברה בסיסית."},
+  {c:"מתמטיקה",e:"📐",t:"משפט פרמה הגדול — xⁿ+yⁿ=zⁿ אין פתרון שלם ל-n>2 — הוכח אחרי 358 שנה על ידי אנדרו ויילס ב-1995."},
+  {c:"מתמטיקה",e:"📐",t:"יש 'אינסופים גדולים מאחרים' — קנטור הוכיח שיש יותר מספרים ממשיים ממספרים טבעיים, למרות ששניהם אינסופיים."},
+  {c:"מתמטיקה",e:"📐",t:"בכל קבוצה של 23 אנשים, ההסתברות ששניים חולקים יום הולדת זהה עולה על 50% — זהו 'פרדוקס יום ההולדת'."},
+  {c:"מתמטיקה",e:"📐",t:"זהות אוילר e^(iπ)+1=0 מקשרת חמישה קבועים מתמטיים יסודיים ומוחשבת לאחת המשוואות היפות ביותר במתמטיקה."},
+  {c:"מתמטיקה",e:"📐",t:"מספרי פיבונאצ'י מופיעים בטבע בתדירות מפתיעה: בסידור עלי כותרת, בסחזרן, בקונוסי אורן — הם קשורים ליחס הזהב."},
+  {c:"מתמטיקה",e:"📐",t:"'בעיית שבעת הגשרים של קניגסברג' היה הבסיס לתורת הגרפים — אוילר הוכיח ב-1736 שאי-אפשר לחצות כל גשר בדיוק פעם אחת."},
+  {c:"מתמטיקה",e:"📐",t:"משפט ה-4 צבעים — 4 צבעים מספיקים לצביעת כל מפה שטוחה — הוכח ב-1976 בעזרת מחשב, הוכחה הראשונה מסוגה."},
+  {c:"מתמטיקה",e:"📐",t:"מספר גוגול הוא 10¹⁰⁰. מספר גוגולפלקס הוא 10^גוגול — גדול כל כך שלא ניתן לכתוב אותו אפילו אם כל חלקיקי היקום היו ספרות."},
+  {c:"מתמטיקה",e:"📐",t:"לפי משפט אוקלידס קיימים אינסוף מספרים ראשוניים — ההוכחה פשוטה: אם נניח סוף, נגיע לסתירה."},
+  {c:"מתמטיקה",e:"📐",t:"בעיית בנאך-טארסקי הוכיחה מתמטית שניתן 'לפרק' כדור למספר סופי של חלקים ולהרכיב ממנו שני כדורים זהים בגודלם."},
+  {c:"מתמטיקה",e:"📐",t:"מספר e (כ-2.71828) הוא הבסיס היחיד שהנגזרת של bˣ שווה לעצמה — תכונה שהופכת אותו לבסיסי בחשבון אינפינטסימלי."},
+  {c:"מתמטיקה",e:"📐",t:"הפרש בין מספר זוגות ראשוניים — ב'השערת גולדבאך' כל מספר זוגי גדול מ-2 הוא סכום שני ראשוניים — עדיין לא הוכחה."},
+  {c:"מתמטיקה",e:"📐",t:"הסבירות לזכות בלוטו ישראלי (6 מ-37) היא 1 ל-2,324,784 — נמוכה יותר מהסיכוי להיפגע מברק פעמיים באותה שנה."},
+  // 131–145 פסיכולוגיה
+  {c:"פסיכולוגיה",e:"🧠",t:"אפקט הדנינג-קרוגר: אנשים בעלי ידע מוגבל נוטים להעריך יתר את יכולתם; בעלי ידע רב — להעריך אותה בחסר."},
+  {c:"פסיכולוגיה",e:"🧠",t:"הזיכרון האנושי אינו 'מצלמה' — בכל פעם שמזכירים זיכרון, בונים אותו מחדש וייתכן שמשנים פרטים."},
+  {c:"פסיכולוגיה",e:"🧠",t:"ניסוי מילגרם (1961) הראה שרוב האנשים יציתו לסמכות גם כשנדרשים לפגוע באחרים — 65% הגיעו לעוצמה מקסימלית."},
+  {c:"פסיכולוגיה",e:"🧠",t:"אפקט ה-Mere Exposure: אנשים נוטים להעריך יותר דברים שנחשפו אליהם בעבר, גם ללא מודעות לחשיפה."},
+  {c:"פסיכולוגיה",e:"🧠",t:"שינה חיונית לסיכום למידה — במהלך שנת REM המוח מחזק חיבורים נוירוניים הקשורים לחוויות היום."},
+  {c:"פסיכולוגיה",e:"🧠",t:"אנשים נוטים לזכור את ההתחלה ואת הסוף של רשימה טוב יותר מהאמצע — תופעת 'עקומת המיקום הטורי'."},
+  {c:"פסיכולוגיה",e:"🧠",t:"ניסוי הכלא של סטנפורד (1971) הופסק אחרי 6 ימים במקום 14 — המשתתפים נכנסו לתפקידיהם (שומרים ואסירים) בצורה מדאיגה."},
+  {c:"פסיכולוגיה",e:"🧠",t:"תחושת 'זרימה' (Flow) של מיהאי צ'יקסנטמיהאי היא מצב ריכוז ושביעות-רצון — מתרחשת כשהאתגר מתאים בדיוק ליכולת."},
+  {c:"פסיכולוגיה",e:"🧠",t:"ניסוי הבובה בובו (Bandura, 1961) הראה שילדים מחקים התנהגות אלימה שראו אצל מבוגרים — בסיס לתורת הלמידה החברתית."},
+  {c:"פסיכולוגיה",e:"🧠",t:"פרדוקס הבחירה (ברי שוורץ): יותר מדי אפשרויות בחירה מובילות לפחות שביעות-רצון מהבחירה הסופית."},
+  {c:"פסיכולוגיה",e:"🧠",t:"תינוקות מזהים פרצופים מיד לאחר הלידה — מתבוננים בהם זמן ממושך יותר מבאובייקטים אחרים, בפרט בעיניים."},
+  {c:"פסיכולוגיה",e:"🧠",t:"אפקט ה-Priming: חשיפה לגירוי אחד משפיעה על תגובה לגירוי עוקב — חשיפה למילת 'רופא' מגבירה מהירות זיהוי של 'אחות'."},
+  {c:"פסיכולוגיה",e:"🧠",t:"עקרון ה-'10,000 שעות' של גלדוול מבוסס על מחקר אנדרס אריקסון על נגני כינור — אך אריקסון עצמו הסייג שאיכות האימון חשובה מכמותו."},
+  {c:"פסיכולוגיה",e:"🧠",t:"אפקט המסגרת: אנשים מגיבים שונה לאותו מידע בהתאם לאיך שהוא מנוסח — '95% שרידה' נראה טוב יותר מ'5% תמותה'."},
+  {c:"פסיכולוגיה",e:"🧠",t:"'חוק יֶרקס-דודסון' קובע שרמת עוררות בינונית מאפשרת ביצועים מיטביים — לחץ נמוך מדי או גבוה מדי פוגעים בביצועים."},
+  // 146–160 טכנולוגיה
+  {c:"טכנולוגיה",e:"💻",t:"האינטרנט והרשת (WWW) הם שני דברים שונים — האינטרנט הוא תשתית הרשת הפיזית; ה-WWW הוא שירות המבוסס עליה, שהומצא ב-1989."},
+  {c:"טכנולוגיה",e:"💻",t:"ה-GPS מסתמך על תיקוני יחסות — ללא תיקון לזמן יחסות כללית וייחודית, השגיאה הצטברת הייתה 10 ק\"מ ביום."},
+  {c:"טכנולוגיה",e:"💻",t:"ה-QR Code פותח ב-1994 על ידי חברת Denso Wave היפנית — תחילה למעקב אחר חלקי מכוניות בפסי ייצור."},
+  {c:"טכנולוגיה",e:"💻",t:"אלגוריתם PageRank של גוגל פותח ב-1996 על ידי לארי פייג' וסרגיי ברין — מסדר דפים לפי כמות ואיכות קישורים נכנסים."},
+  {c:"טכנולוגיה",e:"💻",t:"CRISPR-Cas9 מאפשר לחתוך DNA בנקודות מדויקות ולתקן, להוסיף, או להסיר גנים. הפיתוח זכה בפרס נובל לכימיה ב-2020."},
+  {c:"טכנולוגיה",e:"💻",t:"ליתיום-יון סוללות מאבדות קיבולת עם כל מחזור טעינה. לאחר כ-500 מחזורים מלאים קיבולתן יורדת לכ-80%."},
+  {c:"טכנולוגיה",e:"💻",t:"כבל פייבר-אופטיק מעביר מידע כאור בתוך זכוכית — כבל בודד יכול להכיל מאות ערוצים ולהעביר טרה-בייטים בשנייה."},
+  {c:"טכנולוגיה",e:"💻",t:"TCP/IP, הפרוטוקול עליו מבוסס האינטרנט, פותח על ידי ויטון סרף ובוב קאן ב-1974 — עדיין המרכיב הבסיסי של התקשורת ברשת."},
+  {c:"טכנולוגיה",e:"💻",t:"אלגוריתם הדחיסה JPEG (1992) מבוסס על טרנספורם קוסינוס בדידה — מסיר מידע שהעין האנושית פחות רגישה אליו."},
+  {c:"טכנולוגיה",e:"💻",t:"חישוב קוונטי מנצל כיפוף קוונטי (superposition) — קיוביט יכול להיות 0 ו-1 בו-זמנית, מה שמאפשר מקביליות חישובית עצומה."},
+  {c:"טכנולוגיה",e:"💻",t:"המנוע הראשון שפועל על בנזין הומצא על ידי קרל בנץ ב-1885. פטנט הרכב שלו נחשב לרכב המנועי המודרני הראשון."},
+  {c:"טכנולוגיה",e:"💻",t:"ה-USB פותח בין 1994–1996 על ידי קונסורציום הכולל אינטל, IBM ומיקרוסופט — כדי לפשט חיבור ציוד היקפי למחשב."},
+  {c:"טכנולוגיה",e:"💻",t:"בלוקצ'יין הוצג ב-2008 על ידי 'סאטושי נקמוטו' הבדוי כבסיס לביטקוין — אך הטכנולוגיה עצמה שימושית לאחסון מידע מוצפן כלשהו."},
+  {c:"טכנולוגיה",e:"💻",t:"המדפסת בדיו הראשונה שוחררה על ידי HP ב-1976. היא עבדה על ידי חימום דיו עד להתפרצות קטנה שהיתיזה טיפה על הנייר."},
+  {c:"טכנולוגיה",e:"💻",t:"ה-WWW פותח ב-1989 על ידי טים ברנרס-לי ב-CERN. הוא הציע לראשונה קישורי היפרטקסט בין מסמכים ברשת ציבורית."},
+  // 161–175 כלכלה
+  {c:"כלכלה",e:"💰",t:"בגרמניה ב-1923 הגיעה האינפלציה לשיא מדהים — מחיר כיכר לחם הגיע לטריליוני מארק, ואנשים נשאו כסף בעגלות גלגל."},
+  {c:"כלכלה",e:"💰",t:"שוק מניות Wall Street התמוטט ב-1929 ('שלישי השחור') — הביא לדיכאון הגדול עם אבטלה של כ-25% בארה\"ב."},
+  {c:"כלכלה",e:"💰",t:"ה-GDP אינו מודד אי-שוויון, רווחה, חינם, או קיימות. מדינה שתוכה כואבת יכולה להציג GDP גבוה."},
+  {c:"כלכלה",e:"💰",t:"עקומת פיליפס הראתה קשר הפוך בין אינפלציה לאבטלה. בשנות ה-70 קרסה התיאוריה עם עלייתה של 'סטגפלציה'."},
+  {c:"כלכלה",e:"💰",t:"חוק גרשם: 'כסף רע מגרש כסף טוב' — כשיש שני מטבעות בשוק, הציבור אוגר את המטבע בעל הערך הגבוה ומוציא את הנחות."},
+  {c:"כלכלה",e:"💰",t:"הבנק המרכזי הראשון בעולם היה בנק שוודיה (Riksbank), שנוסד ב-1668. בנק אנגליה (1694) נחשב לאבי הבנקאות המרכזית המודרנית."},
+  {c:"כלכלה",e:"💰",t:"כלכלת יפן שמרה על ריבית אפסית (0%) כמעט ברציפות מ-1995 — ניסוי מוניטרי ייחודי בהיסטוריה הכלכלית המודרנית."},
+  {c:"כלכלה",e:"💰",t:"הכלכלה הראשונה שהגיעה ל-1 טריליון דולר תמ\"ג הייתה ארה\"ב ב-1970. כיום הכלכלה האמריקנית עולה על 25 טריליון דולר."},
+  {c:"כלכלה",e:"💰",t:"'יד הבלתי נראית' — מטפורה של אדם סמית מ-1776 — מתארת כיצד פרטים שמבקשים את טובתם האישית תורמים לתועלת הכלל."},
+  {c:"כלכלה",e:"💰",t:"בביטקוין לעולם לא יוטבעו יותר מ-21 מיליון מטבעות. נכון לסוף 2024 כ-19.7 מיליון מטבעות כבר הופקו."},
+  {c:"כלכלה",e:"💰",t:"'אפקט ריקושה' (Rebound Effect): שיפור יעילות אנרגטית גורם לעיתים לצריכה רבה יותר, לא פחות — כי העלות לשימוש יורדת."},
+  {c:"כלכלה",e:"💰",t:"תיאוריית המשחקים — שפותחה על ידי ג'ון פון נוימן ואוסקר מורגנשטרן ב-1944 — חוקרת קבלת החלטות אסטרטגית בין שחקנים רציונליים."},
+  {c:"כלכלה",e:"💰",t:"'דילמת האסיר' בתורת המשחקים מראה שיחידים רציונליים עשויים לבחור לא לשתף פעולה גם אם זה נגד טובתם המשותפת."},
+  {c:"כלכלה",e:"💰",t:"ה-IMF (קרן המטבע הבינלאומית) נוסד ב-1944 בוועידת ברטון-וודס — ביחד עם הבנק העולמי, כדי לייצב את הכלכלה הגלובלית לאחר מלחמת העולם ה-2."},
+  {c:"כלכלה",e:"💰",t:"כיכר מרקוס בוונציה הייתה ממרכזי הסחר החשובים בימי הביניים — הכניסה חלשה לארבה השחורה שהגיעה עם ספינות מהמזרח."},
+  // 176–190 שפה
+  {c:"שפה",e:"🗣️",t:"מנדרינית סינית היא השפה בעלת מספר הדוברים הגדול ביותר (כ-1.1 מיליארד). אנגלית מובילה בדוברים לא-ילידים."},
+  {c:"שפה",e:"🗣️",t:"כ-7,000 שפות מדוברות היום בעולם, אך 23 מהן משמשות לתקשורת של מחצית מאוכלוסיית העולם."},
+  {c:"שפה",e:"🗣️",t:"עברית היא השפה הכתובה היחידה שהוחייתה לשימוש יומיומי לאחר מאות שנים כשפה ליטורגית בלבד."},
+  {c:"שפה",e:"🗣️",t:"כ-40% מהמילים הספרדיות נגזרות מהערבית — תוצאה ישירה של 700 שנות שלטון מוסלמי בחצי האי האיברי (711–1492)."},
+  {c:"שפה",e:"🗣️",t:"האיסלנדית כמעט לא השתנתה מאז ימי הביניים — דוברים כיום קוראים ספרות מ-1200 לספירה ללא קושי מיוחד."},
+  {c:"שפה",e:"🗣️",t:"שפת הסימנים אינה אוניברסלית — כל מדינה (ולעיתים אזורים בה) פיתחה שפת סימנים עצמאית ושונה."},
+  {c:"שפה",e:"🗣️",t:"יפנית משתמשת בשלושה כתבים בו-זמנית: הירגנה, קטאקנה, וקאנג'י. טקסטים שלמים מערבבים את שלושתם."},
+  {c:"שפה",e:"🗣️",t:"פינית מכילה 15 מקרים דקדוקיים (case) במקום מילות-יחס — שפה עשירה מבחינת מורפולוגיה אך ללא מינים דקדוקיים."},
+  {c:"שפה",e:"🗣️",t:"'Colorless green ideas sleep furiously' — משפט של נואם חומסקי (1957) שתחבירית שלם לחלוטין אך סמנטית חסר כל משמעות."},
+  {c:"שפה",e:"🗣️",t:"המילה 'quark' (חלקיק תת-אטומי) נטבעה על ידי מאריי גל-מאן ב-1964 — לקוחה מ'פינגנס-וייק' של ג'ויס."},
+  {c:"שפה",e:"🗣️",t:"שפת הבסקית (Euskara) בצפון ספרד ודרום צרפת היא שפה מבודדת — אין לה קרבה לאף שפה אחרת בעולם."},
+  {c:"שפה",e:"🗣️",t:"האלפבית הפיניקי (כ-1050 לפנה\"ס) היה בין הראשונים שייצגו אות אחת לצליל אחד — ממנו נגזרו כל האלפביתים המערביים."},
+  {c:"שפה",e:"🗣️",t:"מדינת פאפואה גינאה החדשה מכילה יותר מ-800 שפות שונות — כמעט שליש משפות העולם — בשטח של 462,000 קמ\"ר."},
+  {c:"שפה",e:"🗣️",t:"שפת ה-Pirahã של שבט אמזוני חסרה מספרים, מילות זמן-עתיד, וצורות דקדוקיות שמאפשרות 'הטמעה' — דבר שאתגר תיאוריות בלשניות."},
+  {c:"שפה",e:"🗣️",t:"האנגלית שאלה יותר ממילים מצרפתית מכל שפה אחרת — כתוצאה מהכיבוש הנורמני ב-1066 שהוסיף שכבה שלמה של אוצר מילים."},
+  // 191–205 מוזיקה
+  {c:"מוזיקה",e:"🎵",t:"הנוטה A4 כוונה ל-440 הרץ כתקן בינלאומי ב-1939. לפני כן, כיוון A השתנה בין 415 ל-466 הרץ בין אזורים ותקופות."},
+  {c:"מוזיקה",e:"🎵",t:"מוצרט כתב את הסימפוניה הראשונה שלו בגיל 8 — אך חוקרים מציינים שאביו לאופולד כנראה עזר בעריכה."},
+  {c:"מוזיקה",e:"🎵",t:"'4'33\"' של ג'ון קייג' (1952) היא יצירה שבה הנגן לא מנגן דבר — הרעש הסביבתי של הקהל הוא עצם היצירה."},
+  {c:"מוזיקה",e:"🎵",t:"בטהובן כתב את סימפוניה ה-9 כשהיה חרש לחלוטין — בין השנים 1822–1824. לפי עדויות, בפרמיירה הוא ניסה לנצח ממנה."},
+  {c:"מוזיקה",e:"🎵",t:"הפסנתר מכיל יותר מ-12,000 חלקים. מיתרי הסופרן מקבלים שלוש מכות מחבט לעומת מכה אחת לבאס."},
+  {c:"מוזיקה",e:"🎵",t:"הכינור עשוי מ-70 חלקים שונים. עץ האשוח (Spruce) לפנל הקדמי ועץ מייפל לאחורי — כל אחד תורם לצבע הצליל."},
+  {c:"מוזיקה",e:"🎵",t:"גיטרה קלאסית מתוכוונת ל-E-A-D-G-B-E מהנמוך לגבוה. הכיוון הזה מאפשר צורות אקורד נוחות עם מינימום מעברי אצבע."},
+  {c:"מוזיקה",e:"🎵",t:"'Well-Tempered Clavier' של באך (1722) הוכיח שניתן לנגן בכל 24 המפתחות — הנחה שלא הייתה מובנת מאליה במערכות כיוון ישנות."},
+  {c:"מוזיקה",e:"🎵",t:"הדראם-קיט המודרני התפתח בשנות ה-20 בניו-אורלינס — כדי שנגן אחד יוכל לנגן מה שדרש בעבר כמה מתופפים."},
+  {c:"מוזיקה",e:"🎵",t:"הסינתסייזר המוני הראשון היה ה-Minimoog (1970) של רוברט מוג — עשה את הסינתזה נגישה לנגנים בודדים לראשונה."},
+  {c:"מוזיקה",e:"🎵",t:"המוח האנושי מעבד מוזיקה ושפה באזורים חופפים. מוזיקה עשויה לשפר עיבוד שפה, ולכן מוזיקה משמשת בטיפול בדיסלקציה."},
+  {c:"מוזיקה",e:"🎵",t:"יוהאן סבסטיאן באך היה לו 20 ילדים — 10 מאשתו הראשונה ו-13 מהשנייה. כ-7 מהם הפכו למלחינים מוכרים."},
+  {c:"מוזיקה",e:"🎵",t:"'הסימפוניה הלא גמורה' של שוברט — ב' מינור, D. 759 — נכתבה ב-1822 וכוללת רק שתי תנועות. הסיבה לאי-השלמתה לא ידועה."},
+  {c:"מוזיקה",e:"🎵",t:"הג'אז, שהתפתח בניו-אורלינס בשנות ה-1890, שילב ריתמוס אפריקאי עם הרמוניה אירופאית — יצר אחד הז'אנרים המשפיעים ביותר."},
+  {c:"מוזיקה",e:"🎵",t:"המרווח המוזיקלי ה-'Tritone' (שלישה מוגדלת) נחשב בימי הביניים ל-'Diabolus in Musica' — שטן במוזיקה — ונמנע בקומפוזיציה כנסייתית."},
+  // 206–220 ספורט
+  {c:"ספורט",e:"⚽",t:"מרתון מתייחס לגזרת מרתון ביוון. לפי האגדה רץ שם שליח ב-490 לפנה\"ס לאתונה כדי לבשר על ניצחון, ומת עם הגיעו."},
+  {c:"ספורט",e:"⚽",t:"כדורגל הוא ענף הספורט הפופולרי ביותר בעולם — כ-4 מיליארד אנשים עוקבים אחריו."},
+  {c:"ספורט",e:"⚽",t:"מרחק המרתון — 42.195 ק\"מ — נקבע באולימפיאדת 1908 בלונדון, כדי שהמירוץ יתחיל מול חלון חדרי הנסיכות בוינדזור."},
+  {c:"ספורט",e:"⚽",t:"מיכאל פלפס זכה ב-23 מדליות זהב אולימפיות — יותר ממה שרוב מדינות הגיעו לאורך כל ההיסטוריה האולימפית."},
+  {c:"ספורט",e:"⚽",t:"בטניס שולחן הכדור יכול לנוע עד 112 קמ\"ש אחרי סמאש. קוטרו רק 40 מ\"מ — מה שהופך אותו לאחד הספורטים המהירים ביותר."},
+  {c:"ספורט",e:"⚽",t:"מגרש כדורגל סטנדרטי (FIFA) הוא 105×68 מטר. המשחק עצמו נמשך 90 דקות, שנקבעו בהסכם לא רשמי בשנות ה-1860 באנגליה."},
+  {c:"ספורט",e:"⚽",t:"המירוץ לאולימפיאדות המודרניות החל ב-1896 באתונה, ביוזמתו של הבארון פייר דה קובארטן. 14 מדינות ו-241 ספורטאים השתתפו."},
+  {c:"ספורט",e:"⚽",t:"בגולף, ה-'hole in one' — כניסה לגומה ממכה אחת — הסתברותו עבור אמאטאור ממוצע היא כ-1 ל-12,500."},
+  {c:"ספורט",e:"⚽",t:"שחייה היא אחד הספורטים המאמצים ביותר את כלל שרירי הגוף — כ-50 שרירים עיקריים פעילים בכל מחזור שחייה."},
+  {c:"ספורט",e:"⚽",t:"טורניר הוימבלדון הוא הגרנד-סלאם הוותיק ביותר בטניס — החל ב-1877. הוא היחיד שעדיין מחייב שחקנים ללבוש לבן."},
+  {c:"ספורט",e:"⚽",t:"ה-Tour de France הוא אחד האירועים הספורטיביים הקשים בעולם — 21 שלבים לאורך כ-3,500 ק\"מ, בדרך כלל ביולי."},
+  {c:"ספורט",e:"⚽",t:"ביסבול קיבל את גודל כדורו הסטנדרטי (229–235 מ\"מ היקף) ב-1872 — ועד היום לא שונה."},
+  {c:"ספורט",e:"⚽",t:"במשחק הגו (Go) מספר המצבים האפשריים על הלוח גדול ממספר האטומים ביקום — 2.08×10¹⁷⁰."},
+  {c:"ספורט",e:"⚽",t:"ג'ודו (שם: 'דרך הגמישות') פותח ב-1882 על ידי ג'יגורו קאנו ביפן — הספורט לחימה הראשון שהפך לתחרות אולימפית (1964)."},
+  {c:"ספורט",e:"⚽",t:"ריצת 100 מטר: אוסיין בולט שבר את שיא העולם ב-2009 בברלין — 9.58 שניות. הוא רץ בממוצע 37.58 קמ\"ש."},
+  // 221–235 אוכל
+  {c:"אוכל",e:"🍎",t:"עגבנייה היא מבחינה בוטנית פרי — בעלת זרעים ומתפתחת מפרח. פסיקת בית-המשפט העליון של ארה\"ב ב-1893 הכריזה עליה כירק מטעמי מכס."},
+  {c:"אוכל",e:"🍎",t:"דבש לא מתקלקל — צנצנות דבש בנות 3,000 שנה נמצאו בקברי מצרים ועדיין היו ראויות לאכילה הודות לחומציות ולחות נמוכה."},
+  {c:"אוכל",e:"🍎",t:"אננס מכיל ברומלאין — אנזים שמפרק חלבונים. לכן בעת אכילת אננס טרי, האנזים גם מפרק את רירית הפה שלך."},
+  {c:"אוכל",e:"🍎",t:"קפה הוא אחת הסחורות הנסחרות ביותר בעולם — שנייה רק לנפט. כ-2.5 מיליארד כוסות קפה נשתות מדי יום."},
+  {c:"אוכל",e:"🍎",t:"חריפות נמדדת ביחידות סקוויל: פלפל ירוק = 0, חלפנייו = 2,500–8,000, פלפל קרולינה ריפר = 2.2 מיליון."},
+  {c:"אוכל",e:"🍎",t:"תפוח עץ צף כי הוא מורכב מ-25% אוויר — מה שגם הופך אותו קל ורענן לנשיכה."},
+  {c:"אוכל",e:"🍎",t:"שוקולד כהה (מעל 70% קקאו) מכיל פלבנואידים — נוגדי-חמצון שמחקרים מצביעים על השפעה חיובית על לחץ-הדם."},
+  {c:"אוכל",e:"🍎",t:"חלבוני ביצה מכילים את כל חומצות האמינו החיוניות לאדם. לכן הביצה נחשבת לאחד ממזוני-השלמות המועילים ביותר."},
+  {c:"אוכל",e:"🍎",t:"הסושי לא הומצא ביפן — מקורו בדרום מזרח אסיה כשיטה לשימור דגים בתסיסת אורז. הגרסה היפנית המוכרת כיום מהמאה ה-19."},
+  {c:"אוכל",e:"🍎",t:"פסטה לא הגיעה לאירופה מסין עם מארקו פולו — זו מיתוס. כתבים ערביים מהמאה ה-12 מזכירים כבר פסטה מיובשת בסיציליה."},
+  {c:"אוכל",e:"🍎",t:"וניל מקורית (Vanilla planifolia) היא צמח ממשפחת הסחלבים. כ-80% מהוניל בשוק הוא סינתטי — vanillin מיוצר מנגזרות נפט."},
+  {c:"אוכל",e:"🍎",t:"בננה מבחינה בוטנית היא עשב — הצמח הגבוה ביותר בעולם ללא גזע מעץ אמיתי."},
+  {c:"אוכל",e:"🍎",t:"תה הוא המשקה הנפוץ ביותר בעולם אחרי מים — עם כ-3 מיליארד כוסות שנשתות מדי יום."},
+  {c:"אוכל",e:"🍎",t:"כרובית, ברוקולי, כרוב, כרוב ניצנים, קייל וכרוב קולרבי — כולם מינים של אותו מין צמחי בדיוק (Brassica oleracea)."},
+  {c:"אוכל",e:"🍎",t:"אבוקדו הוא ממינים שנקראים 'אנכרוניזם אבולוציוני' — פרי שהתפתח כדי להיאכל על ידי בעלי-חיים גדולים שנכחדו לפני 13,000 שנה."},
+  // 236–250 פילוסופיה
+  {c:"פילוסופיה",e:"🤔",t:"'אני חושב, לכן אני קיים' (Cogito ergo sum) של דקארט (1637) — הדבר היחיד שלא ניתן להטיל בו ספק הוא עצם החשיבה."},
+  {c:"פילוסופיה",e:"🤔",t:"פרדוקס האוניה של תזאוס: אם מחליפים כל חלק בספינה — האם היא אותה הספינה? סוגיית זהות שממשיכה לעסוק פילוסופים."},
+  {c:"פילוסופיה",e:"🤔",t:"קאנט טען שמוח האדם אינו 'מקבל' מציאות — הוא 'מעצב' אותה. זמן, מרחב וסיבתיות הם מבנים שהמוח מטיל על החוויה."},
+  {c:"פילוסופיה",e:"🤔",t:"'עקרון הנזק' של ג'ון סטיוארט מיל (1859): המדינה רשאית לגביל חירות רק למניעת נזק לאחרים — לא כדי להגן על האדם מעצמו."},
+  {c:"פילוסופיה",e:"🤔",t:"'סכין אוקאם' הוא עקרון מתודולוגי: בין שני הסברים, עדיף הפשוט יותר — בהיעדר סיבה לבחור אחרת."},
+  {c:"פילוסופיה",e:"🤔",t:"פרדוקס סוריטס: כמה גרגרי חול מהווים 'ערמה'? הסרת גרגר אחד אינה הופכת ערמה ללא-ערמה — אז איפה הגבול?"},
+  {c:"פילוסופיה",e:"🤔",t:"ניטשה כתב: 'מה שלא הורג אותי מחזק אותי.' אמרה זו מ-Twilight of the Idols (1888) הפכה לשגורה בפי רבים."},
+  {c:"פילוסופיה",e:"🤔",t:"'צופה הפגיון' (Bystander Effect): ככל שיש יותר עדים לסיטואציה, כל פרט פחות צפוי להתערב — הוכח בניסויים של דארלי ולטאנה."},
+  {c:"פילוסופיה",e:"🤔",t:"פרדוקס הטלפות: אם ניצור ספינת טלפות מושלמת, האם ראוי לה לנסות לחלץ? מה הגבול בין הצלה להרפתקה?"},
+  {c:"פילוסופיה",e:"🤔",t:"הוויכוח הפילוסופי 'האם האדם טוב מטבעו' חילק את הוגי הדעות: הובס ראה האדם כזאב, רוסו ראה אותו כנאיבי שמקולקל על ידי החברה."},
+  {c:"פילוסופיה",e:"🤔",t:"אפלטון טען שהמציאות הנתפסת היא 'צל' בלבד של מציאות אידיאלית — הידועה כ'מטפורת המערה' מ'הרפובליקה'."},
+  {c:"פילוסופיה",e:"🤔",t:"הדטרמיניזם טוען שכל אירוע נגרם מאירוע קודם — מה שמאתגר מהותית את מושג הבחירה החופשית האנושית."},
+  {c:"פילוסופיה",e:"🤔",t:"טענת 'הסימולציה' של ניק בוסטרום (2003): אחת משלוש אפשרויות אמת — ציוויליזציות מתקדמות מכחידות עצמן, לא מעוניינות בסימולציות, או אנחנו בסימולציה."},
+  {c:"פילוסופיה",e:"🤔",t:"'מחשבת הרולס' (John Rawls, 1971): לבנות חברה הוגנת מתוך 'מסך הבערות' — מבלי לדעת מה יהיה מעמדך החברתי."},
+  {c:"פילוסופיה",e:"🤔",t:"סטואיציזם — פילוסופיה שהחלה ביוון ב-301 לפנה\"ס — מלמד להתמקד רק במה שבשליטתנו ולקבל את השאר בשוויון נפש."},
+  // 251–265 ביולוגיה
+  {c:"ביולוגיה",e:"🧬",t:"כל היצורים החיים — מחיידקים ועד לווייתנים — משתמשים ב-DNA מבוסס על אותם 4 בסיסים: A, T, G, C."},
+  {c:"ביולוגיה",e:"🧬",t:"תאי הבטא בלבלב מייצרים אינסולין — הורמון המאפשר לתאים לקלוט גלוקוז. בסוכרת סוג 1, תאים אלה נהרסים על ידי המערכת החיסונית."},
+  {c:"ביולוגיה",e:"🧬",t:"מיטוכונדריה — מפעל האנרגיה של התא — מכילה DNA משלה, כראיה שהיא הייתה פעם חיידק עצמאי שנטמע בתא אוקריוטי."},
+  {c:"ביולוגיה",e:"🧬",t:"שיכפול DNA הוא כמעט ללא שגיאות — פולימראז ה-DNA מטעה פחות מפעם אחת לכל מיליארד בסיסים."},
+  {c:"ביולוגיה",e:"🧬",t:"הוירוס הוא לא-חי לפי רוב הגדרות — אין לו חילוף חומרים עצמאי ואינו יכול להתרבות ללא תא מארח."},
+  {c:"ביולוגיה",e:"🧬",t:"ה-CRISPR-Cas9 מקורו במערכת חיסונית של חיידקים — הם שמרו קטעי DNA של וירוסים לצורך זיהוי וחיסול עתידי."},
+  {c:"ביולוגיה",e:"🧬",t:"אנשים חולקים כ-99.9% מה-DNA שלהם עם כל אדם אחר. ה-0.1% שנשאר הוא מה שיוצר את כל השונות הביולוגית הנראית."},
+  {c:"ביולוגיה",e:"🧬",t:"אנשים חולקים כ-60% מה-DNA שלהם עם בננה — כי שני המינים שיתפו אבות קדומים ורבים מגנים בסיסיים נשמרו."},
+  {c:"ביולוגיה",e:"🧬",t:"עץ החיים הדרוויני מראה שכל החיים שייכים לשלוש ממלכות-על: בקטריה, ארכיאה, ואוקריוטים — כולם צאצאי אב משותף."},
+  {c:"ביולוגיה",e:"🧬",t:"אנטיביוטיקה הורגת חיידקים אך לא וירוסים — לכן שימוש בה נגד שפעת (ויראלי) הוא חסר תועלת ומגביר עמידות."},
+  {c:"ביולוגיה",e:"🧬",t:"ריפוי פצע תלוי בגורמי גדילה (Growth Factors) — חלבונים המסמנים לתאים להתחלק ולנדוד לאזור הפצע."},
+  {c:"ביולוגיה",e:"🧬",t:"חיסון (Vaccination) עובד על ידי 'הכשרת' מערכת החיסון לזהות אנטיגן מסוים לפני שהוירוס/חיידק האמיתי יגיע."},
+  {c:"ביולוגיה",e:"🧬",t:"מערכת החיסון כוללת שני ענפים: מולדת (תגובה מהירה, לא ספציפית) ונרכשת (איטית אך ספציפית, ויוצרת זיכרון חיסוני)."},
+  {c:"ביולוגיה",e:"🧬",t:"אפיגנטיקה חוקרת שינויים בביטוי גנים ללא שינוי ב-DNA — גורמי סביבה ואפילו ניסיון עשויים להשפיע על ביטוי גנים לדורות."},
+  {c:"ביולוגיה",e:"🧬",t:"תאי גזע עובריים יכולים להתמיין לכל סוג תא בגוף. תאי גזע מבוגרים מוגבלים לסוגי תאים מסוימים — אך קלים יותר אתית להשגה."},
+  // 266–280 פיזיקה
+  {c:"פיזיקה",e:"⚛️",t:"תורת היחסות הפרטית של איינשטיין (1905): ככל שגוף נע מהר יותר, זמנו מאט (דילציית-זמן) ומסתו עולה — בהשוואה למתבונן נייח."},
+  {c:"פיזיקה",e:"⚛️",t:"עקרון אי-הוודאות של הייזנברג: לא ניתן לדעת בו-זמנית בדיוק מלא את מיקום חלקיק ותנועו — הדבר נובע ממהות הקוונטיות, לא ממגבלת מדידה."},
+  {c:"פיזיקה",e:"⚛️",t:"'חתול שרדינגר' הוא ניסוי-מחשבה שהמחיש כיצד פירוש קופנהאגן של מכניקת הקוונטים מוביל לאבסורד ברמת המקרו."},
+  {c:"פיזיקה",e:"⚛️",t:"הסופרמוליך: חומרים מסוימים מאבדים את כל ההתנגדות החשמלית שלהם כשמקררים אותם לטמפרטורת-קריאה קריוגנית."},
+  {c:"פיזיקה",e:"⚛️",t:"הטמפרטורה הגבוהה ביותר שהושגה בניסוי היא כ-5.5 טריליון מעלות צלזיוס — ב-CERN בזמן התנגשות יונים כבדים."},
+  {c:"פיזיקה",e:"⚛️",t:"אפקט פוטואלקטרי (שהסביר איינשטיין ב-1905) הוכיח שאור מתנהג גם כחלקיקים (פוטונים) ולא רק כגלים — הבסיס לפיזיקת הקוונטים."},
+  {c:"פיזיקה",e:"⚛️",t:"חור שחור הוא אזור שבו כוח הכבידה חזק כל כך שאפילו אור אינו יכול לצאת ממנו — מעבר ל'אופק האירועים'."},
+  {c:"פיזיקה",e:"⚛️",t:"כוח הכבידה הוא החלש ביותר מבין ארבעת הכוחות הבסיסיים — חלש פי 10³⁶ מהכוח האלקטרומגנטי, ובכל זאת שולט בסולמות קוסמיים."},
+  {c:"פיזיקה",e:"⚛️",t:"בחלל הריק, כלי מוזיקלי שמנגן לא ישמע — קול דורש מדיום (כמו אוויר, מים, מוצק) כדי להתפשט."},
+  {c:"פיזיקה",e:"⚛️",t:"הפוזיטרון (אנטי-אלקטרון) היה החלקיק האנטי-חומרי הראשון שהתגלה — על ידי קרל אנדרסון ב-1932 בקרינת עולמות קוסמית."},
+  {c:"פיזיקה",e:"⚛️",t:"בוזון היגס — 'חלקיק האל' — התגלה ב-CERN ב-2012. השדה שלו נותן לחלקיקים כמו קוארקים ולפטונים את מסתם."},
+  {c:"פיזיקה",e:"⚛️",t:"אפקט דופלר מסביר מדוע קול אמבולנס מתקרב נשמע גבוה יותר וכשמתרחק — נמוך יותר. אותו עיקרון חל על אור ומשמש למדידת מהירות כוכבים."},
+  {c:"פיזיקה",e:"⚛️",t:"לחץ בנוזל גדל עם העומק — על כל 10 מ' עומק מתחת למים, לחץ עולה בכ-1 ATM. בשוחת מריאנה הלחץ עולה על 1,000 ATM."},
+  {c:"פיזיקה",e:"⚛️",t:"הכוחות שמחזיקים אטום יחד חזקים מספיק שאם ניתן לשחרר אותם — זוהי הבסיס לנשק גרעיני ולאנרגיה גרעינית כאחד."},
+  {c:"פיזיקה",e:"⚛️",t:"'חוק שימור מומנט הזווית' מסביר מדוע רקדנית מסתובבת מהר יותר כשמכניסה ידיה — ומדוע כוכבי-נייטרון מסתובבים כל כך מהר."},
+  // 281–295 כימיה
+  {c:"כימיה",e:"🧪",t:"הטבלה המחזורית של מנדלייב (1869) סידרה יסודות לפי מסה אטומית — ומנבאה נכון תכונות של יסודות שעוד לא התגלו."},
+  {c:"כימיה",e:"🧪",t:"מים הם ממס אוניברסלי — ממיסים יותר חומרים מכל נוזל אחר הודות לפולריותם."},
+  {c:"כימיה",e:"🧪",t:"הליום הוא היסוד היחיד שהתגלה בשמש לפני שנמצא על כדור הארץ — ב-1868 דרך ספקטרוסקופיה."},
+  {c:"כימיה",e:"🧪",t:"קרבון-14 מתפרק בקצב קבוע ולכן שימושי לתארוך פחמן — מדד הגיל האמין עד כ-50,000 שנה."},
+  {c:"כימיה",e:"🧪",t:"אוזון (O₃) נוצר בסטרטוספרה מאינטראקציה של קרינת UV עם חמצן — ומגן עלינו מקרינה אולטרה-סגולה."},
+  {c:"כימיה",e:"🧪",t:"חומצה גופרתית (H₂SO₄) היא הכימיקל המיוצר ביותר בעולם — בשימוש ייצור דשן, בטריות, עיבוד מתכות ועוד."},
+  {c:"כימיה",e:"🧪",t:"יהלום הוא הצורה הקשה ביותר של פחמן — אך גרפיט (עיפרון) הוא הצורה היציבה יותר בתנאי חדר. יהלום יהפוך לגרפיט בסוף הדרך."},
+  {c:"כימיה",e:"🧪",t:"ניטרוגן מהווה 78% מהאטמוספרה — יותר מחמצן (21%). אך גז חנקני רגיל (N₂) אינו ניתן לספיגה ישירה על ידי רוב יצורים."},
+  {c:"כימיה",e:"🧪",t:"ריאקציה כימית שמשחררת חום נקראת אקסותרמית (כמו בעירה). ריאקציה שסופגת חום נקראת אנדותרמית (כמו המסת קרח)."},
+  {c:"כימיה",e:"🧪",t:"פלואור הוא היסוד האלקטרושלילי ביותר — שולף אלקטרונים חזק יותר מכל יסוד אחר, ולכן מגיב עם כמעט כל דבר."},
+  {c:"כימיה",e:"🧪",t:"חמצון הוא לא רק 'הוספת חמצן' — מדויק יותר: אובדן אלקטרונים. חיזור הוא קבלת אלקטרונים. הם תמיד מתרחשים ביחד ('רדוקס')."},
+  {c:"כימיה",e:"🧪",t:"פולר (Buckminster Fullerene, C₆₀) — כדור-פחמן בצורת כדורגל — התגלה ב-1985. החוקרים זכו בנובל לכימיה ב-1996."},
+  {c:"כימיה",e:"🧪",t:"אסטרים (חומרים המרכיבים ניחוחות פירות) נוצרים מריאקציה בין חומצה לאלכוהול — לכן ריח בננה מגיע מאסטר אחד (אמיל אצטאט)."},
+  {c:"כימיה",e:"🧪",t:"סודיום (Na) ואשלגן (K) הם מתכות — אך כשנוגעים במים הם מגיבים בחוזקה ואף מתלקחים. שנייה לאחר מגע עם מים."},
+  {c:"כימיה",e:"🧪",t:"pH נמוך מ-7 הוא חומצי, מעל 7 בסיסי. כל יחידה בסולם שווה פי 10 בריכוז יוני מימן — pH 3 חומצי פי 10 מ-pH 4."},
+  // 296–310 מוח ולמידה
+  {c:"מדע",e:"🔬",t:"שינה ממלאת תפקיד קריטי בגיבוש זיכרון — ניסויים מראים שחסך שינה של לילה אחד פוגע בביצועי זיכרון יום למחרת ב-40%."},
+  {c:"מדע",e:"🔬",t:"אפקט 'לשון בתוך הפה' (Tip of the Tongue) — מצב שבו מילה ידועה לך אך אינה מגיעה — מדגים שידע ונגישות הם דברים שונים."},
+  {c:"מדע",e:"🔬",t:"ה-'Forgetting Curve' של הרמן אבינגהאוס (1885) הראה שאנשים שוכחים 50% ממה שלמדו תוך שעה, ו-90% תוך שבוע — ללא חזרה."},
+  {c:"מדע",e:"🔬",t:"למידה מפוזרת (Spaced Repetition) היא השיטה היעילה ביותר לשינון לטווח ארוך — חוזרים על חומר לפי לוח זמנים מרווח ולא ברצף."},
+  {c:"מדע",e:"🔬",t:"מוח ילד בן 5 פועל ב-גאמא וב-ביתא גלים — מצב 'ספיגה' של מידע שאינו קיים אצל מבוגרים, מסביר את כוח הלמידה המוקדמת."},
+  {c:"מדע",e:"🔬",t:"'חוק פיטס': זמן תנועה להגעה למטרה תלוי במרחק ממנה ובגודל המטרה. מכאן נגזרות הנחיות עיצוב ממשקים (UX)."},
+  {c:"מדע",e:"🔬",t:"'חוק הייק': ככל שיש יותר אפשרויות, לוקח יותר זמן להחליט — לוגריתמי. עקרון בסיסי בעיצוב ממשקי משתמש."},
+  {c:"מדע",e:"🔬",t:"מוח האדם מעבד ויזואליה 60,000 פעמים מהר יותר מטקסט — ולכן תמונות ודיאגרמות מועילות ללמידה."},
+  {c:"מדע",e:"🔬",t:"ישנם שני מצבי חשיבה: מיקוד ('Focused Mode') ופריסה ('Diffuse Mode'). תגליות יצירתיות לעיתים קורות דווקא ב-'Diffuse Mode'."},
+  {c:"מדע",e:"🔬",t:"'חוק הכוח של למידה' (Power Law of Learning): שיפור בביצוע משימה פוחת ומתייצב ככל שמתאמנים יותר — בצורת עקומת כוח."},
+  {c:"מדע",e:"🔬",t:"מוח האדם שוקל כ-1.4 ק\"ג — כ-2% ממשקל הגוף — אך צורך 20% מהאנרגיה הכוללת."},
+  {c:"מדע",e:"🔬",t:"ניסוי הגופות של אנגל (2014): אנשים שרשמו הרצאה ביד שמרו על ידע עמוק יותר מאשר אלו שהקישו — כי הכתיבה מאלצת עיבוד."},
+  {c:"מדע",e:"🔬",t:"'אפקט השכחה המכוונת': כאשר מתבקשים לשכוח מידע מסוים, המוח מצליח — דרך עיכוב פעיל של ייצוגים עצביים."},
+  {c:"מדע",e:"🔬",t:"מחקרים מראים שהמוח ממשיך לפתח קשרים נוירוניים חדשים (נוירופלסטיות) לאורך כל החיים — לא רק בילדות."},
+  {c:"מדע",e:"🔬",t:"אנשים שלומדים שתי שפות מינקות מצויים בסיכון מופחת לדמנציה ב-4–5 שנים — לפי מחקרי הדמיה מוחית."},
+  // 311–325 עוד
+  {c:"גאוגרפיה",e:"🌍",t:"מדינת וותיקן, בשטח 0.44 קמ\"ר, היא המדינה הקטנה ביותר בעולם — קטנה יותר מרוב פארקים עירוניים."},
+  {c:"טבע",e:"🌿",t:"מחוברות שורשי עצים: עצים יכולים 'לזהות' שורשים של קרוביהם ולהימנע מתחרות עמם — תנסח ב'חוק קרבת שורשים'."},
+  {c:"היסטוריה",e:"📜",t:"הספריה הגדולה של אלכסנדריה לא נשרפה בהצתה אחת — היא דעכה לאט לאט לאורך מאות שנים מתת-מימון וזניחה."},
+  {c:"מדע",e:"🔬",t:"קוורץ (SiO₂) הוא הסיליקון-בסיסי שממנו עשויים רכיבים אלקטרוניים — עוצמת השוק של תעשיית המוליכים-למחצה."},
+  {c:"חלל",e:"🌌",t:"כוכב הצפון (Polaris) לא תמיד היה ולא תמיד יהיה הכוכב הקוטבי — ציר כדור הארץ מסתחרר במחזורים של 26,000 שנה."},
+  {c:"טבע",e:"🌿",t:"ציפורת הקינגפישר (שלדג) מחלחלת אל המים בזווית מדויקת תוך שהיא מסובבת ראשה — משמשה כהשראה לקדמת רכבי שינקנסן לצמצום פצצת קול."},
+  {c:"מדע",e:"🔬",t:"סוללות גרעיניות ('Betavoltaic') מייצרות חשמל מקרינת בטא של חומרים רדיואקטיביים — חיי מדף של עשרות שנים, כבר בפיתוח מסחרי."},
+  {c:"היסטוריה",e:"📜",t:"פטנטים הומצאו ב-ונציה ב-1474 — חוק הפטנטים הראשון בעולם, שהגן על ממציאים ל-10 שנים."},
+  {c:"טבע",e:"🌿",t:"תמנון הכחול-הטבעתי הוא אחד הפרוקי-רגליים הרעילים ביותר — ארסו מכיל טטרודוטוקסין שאין לו נגד-רעל ידוע."},
+  {c:"מדע",e:"🔬",t:"גוף אנושי בוגר מכיל כ-600 גרם חיידקים — בעיקר במעי הגס. מספרם שווה בערך למספר תאי הגוף עצמו."},
+  {c:"חלל",e:"🌌",t:"קרינה קוסמית מגיעה לכדור הארץ ממכל כיוון ועוברת דרך גוף האדם כל שנייה — מיליוני חלקיקים עוברים דרכנו ברגע זה."},
+  {c:"פסיכולוגיה",e:"🧠",t:"'תופעת הזיכרון שקר' (False Memory): ניתן להשתיל זיכרון שלם וברור על אירוע שמעולם לא קרה — כפי שהדגימה אליזבת לופטוס."},
+  {c:"ביולוגיה",e:"🧬",t:"האיזופוד הענק (Giant Isopod) הוא קרוב לכינת-ים — אך יכול להגיע ל-45 ס\"מ ולשרוד ללא אוכל מעל 5 שנים."},
+  {c:"מתמטיקה",e:"📐",t:"'חוק בנפורד' קובע שבנתונים טבעיים רבים הספרה 1 מופיעה כספרה הראשונה בכ-30% מהמקרים — ומשמש לגילוי זיוף נתונים."},
+  {c:"טכנולוגיה",e:"💻",t:"השבב הראשון (Integrated Circuit) פותח ב-1958 בנפרד על ידי ג'ק קילבי (טי-אי) ורוברט נויס (אינטל) — שניהם קיבלו קרדיט."},
+  // 326–345 עוד
+  {c:"מדע",e:"🔬",t:"'פרדוקס פרמי' שואל: אם החיים נפוצים ביקום — איפה כולם? עדיין אין תשובה מוסכמת לשאלה זו."},
+  {c:"גאוגרפיה",e:"🌍",t:"נמל-תעופה ב-Changi בסינגפור נבחר כ-'נמל התעופה הטוב ביותר בעולם' מעל 10 פעמים ברציפות על ידי Skytrax."},
+  {c:"היסטוריה",e:"📜",t:"מרכז הסחר העולמי של ניו-יורק (WTC) נפתח ב-1973 — המגדל הצפוני היה הבניין הגבוה בעולם עד 1974."},
+  {c:"טבע",e:"🌿",t:"גמלים אינם מאחסנים מים בדבשות — הם מאחסנים שם שומן. אך השומן מתפרק וגם מייצר מים בתהליך מטבולי."},
+  {c:"מוזיקה",e:"🎵",t:"'ריתמוס' של הלב (80–100 BPM) קרוב לטמפו של מוזיקת פופ רגילה — ייתכן שזה מסביר מדוע טמפו כזה מרגיש 'טבעי'."},
+  {c:"כלכלה",e:"💰",t:"'אפקט ורבלן': סחורות יוקרה שמחירן עולה — הביקוש אליהן עולה גם הוא — הפוך מחוק הביקוש הרגיל."},
+  {c:"פסיכולוגיה",e:"🧠",t:"'הטיית האישוש' (Confirmation Bias): אנשים מחפשים ומפרשים מידע באופן שמאשר את האמונות הקיימות שלהם."},
+  {c:"חלל",e:"🌌",t:"הירח הגדול ביותר ביחס לגודל כוכב-לכתו במערכת השמש — שיוֹן של פלוטו — גדול כמחצית מפלוטו עצמו."},
+  {c:"ביולוגיה",e:"🧬",t:"תמנונים וחלזונות הם שניהם רכיכות (Mollusca) — אותה פילה — למרות שנראים שונים לחלוטין זה מזה."},
+  {c:"שפה",e:"🗣️",t:"המילה 'robot' מקורה בצ'כית — R.U.R של קארל צ'פק (1920), מהמילה 'robota' שמשמעותה 'עמל כפייתי'."},
+  {c:"כימיה",e:"🧪",t:"חנקן נוזלי רותח בטמפרטורה של מינוס 196°C — קר כל כך שאם נשפוך אותו על הרצפה הוא רוצד מיד על קרום קיטור שנוצר תחתיו (אפקט לידנפרוסט)."},
+  {c:"מדע",e:"🔬",t:"אבק כוכבים — חלקיקים מאוד עדינים שמגיעים מהחלל — מצטבר על כדור הארץ בקצב של כ-40,000 טון בשנה."},
+  {c:"גוף-האדם",e:"🫀",t:"הריחנות של האדם — 400 סוגי קולטני ריח — מאפשרת הבחנה בין טריליון גירויי ריח שונים לפי מחקר ב-2014."},
+  {c:"היסטוריה",e:"📜",t:"האולימפיאדה העתיקה נערכה ב-776 לפנה\"ס לראשונה (לפי מסורת) ביוון, כשלוש מאות שנה לפני אלכסנדר הגדול."},
+  {c:"טבע",e:"🌿",t:"קורים של עכביש — gram-for-gram — חזקים פי 5 מפלדה ועמידים פי 3 מסיב כוונן — אחד מהחומרים החזקים ביותר הידועים."},
+  {c:"מדע",e:"🔬",t:"הפיזיקאי ריצ'רד פיינמן אמר: 'אם אתה חושב שאתה מבין מכניקת קוונטים — אתה לא מבין מכניקת קוונטים.'"},
+  {c:"ביולוגיה",e:"🧬",t:"חרק הבומבוס (דבורון) נחשב לבלתי-מסוגל לעוף לפי אירודינמיקה ניוטונית — אבל הוא עף. הסיבה: כנפיו יוצרות מערבולות אוויר."},
+  {c:"פילוסופיה",e:"🤔",t:"'פרדוקס הטרמפיסט': אם מישהו יגיד 'אני תמיד משקר' — האם הוא משקר? אם כן, הוא אומר אמת. אם אמת, הוא משקר."},
+  {c:"גאוגרפיה",e:"🌍",t:"קצה דרום אמריקה (קייפ הורן) ידוע כאחת ממסעות ים המסוכנים ביותר — רוחות ים עוברים ב-'הארבעים הסוערים'."},
+  {c:"חלל",e:"🌌",t:"הכוכב VY Canis Majoris הוא אחד הגדולים הידועים — אם נשים אותו במקום שמשנו, הוא יגיע עד מסלול שבתאי."},
+  // 346–365 עוד
+  {c:"מדע",e:"🔬",t:"'חוק מור' ניבא ב-1965 שמספר הטרנזיסטורים בשבב יכפיל עצמו כל שנתיים — כיוון שמקוים ברציפות עד שנות ה-2020."},
+  {c:"טבע",e:"🌿",t:"ים-הסרטנים (Mantis Shrimp) רואים 16 סוגי קולטני צבע לעומת 3 אצל בני-אדם — אך ייתכן שהמוח שלו מעבד צבע פחות טוב מאיתנו."},
+  {c:"היסטוריה",e:"📜",t:"שלמה המלך בנה את בית המקדש הראשון כ-960 לפנה\"ס. הוא נחרב ב-586 לפנה\"ס על ידי נבוכדנאצר מלך בבל."},
+  {c:"ביולוגיה",e:"🧬",t:"בסביבת ה-pH של מיץ הקיבה, כמה חיידקים עמידים כמו H. pylori יכולים לשרוד ולגרום לכיבי קיבה."},
+  {c:"מתמטיקה",e:"📐",t:"'חוק הגדולים': ככל שמדגם גדול יותר, הממוצע שלו מתקרב לממוצע האוכלוסייה האמיתי — הבסיס לסטטיסטיקה."},
+  {c:"פסיכולוגיה",e:"🧠",t:"'חוויית השיא-סיום' (Peak-End Rule): אנשים זוכרים חוויה לפי הרגע המשמעותי בה ולפי איך שהיא הסתיימה — לא לפי ממוצע."},
+  {c:"כלכלה",e:"💰",t:"'תיאוריית הציפיות הרציונליות': אנשים משתמשים בכל המידע הזמין כדי לצפות עתיד — לכן מדיניות כלכלית חוזרת מאבדת יעילות."},
+  {c:"מדע",e:"🔬",t:"אנרגיית האפס-נקודה: גם ב-0 קלווין, חלקיקים עדיין תנודתיים — עקרון אי-הוודאות אוסר מנוחה מוחלטת."},
+  {c:"שפה",e:"🗣️",t:"שפת האסלנטו (ASL) — שפת הסימנים האמריקנית — היא שפה עצמאית לחלוטין, לא גרסת ידיים של אנגלית. יש לה דקדוק שונה לגמרי."},
+  {c:"טבע",e:"🌿",t:"חגבים מסיימים חיים של מספר שנים במחתרת כזחלים — הציקדה מסוג Brood X מבלה 17 שנה תת-קרקעית לפני שיוצאת כחרק בוגר."},
+  {c:"חלל",e:"🌌",t:"ספינת וויאג'ר 1, שוגרה ב-1977, הגיעה למרחב הבין-כוכבי ב-2012. נכון לאפריל 2026 היא מרחק כ-24 מיליארד ק\"מ מכדור הארץ."},
+  {c:"מדע",e:"🔬",t:"תגלית 'שיאה הסירנה' (2022): ממצאים הוכיחו שכוחות הגרביטציה של החלל מאטים שעוני GPS — בדיוק כפי שניבא איינשטיין ב-1915."},
+  {c:"ביולוגיה",e:"🧬",t:"כלב הים ה-Leopard Seal הוא אחד הטורפים הפחות חקורים בים — הוא אוכל פינגווינים, אך הוצפלם רק לאחרונה מזין כלבי ים אחרים."},
+  {c:"פילוסופיה",e:"🤔",t:"'חוויה מכונה' של ג'ון סרל: מכונה המשיבה נכון לשאלות אינה חייבת להבין אותן — מחשבון אינו 'מבין' חיבור."},
+  {c:"גאוגרפיה",e:"🌍",t:"ים כספי הוא הימה הגדולה ביותר בעולם — 371,000 קמ\"ר — ומסווג כ'ים' למרות שמוקף יבשה מכל צד."},
+  {c:"מדע",e:"🔬",t:"טמפרטורת פני השמש היא כ-5,500°C. טמפרטורת הקורונה (האטמוספרה החיצונית) היא מיליוני מעלות — חידה פיזיקלית שטרם נפתרה."},
+  {c:"מדע",e:"🔬",t:"'חוק הצינור' בנוזלים (פוזיי): ספיקת נוזל תלויה בחזקה הרביעית של הרדיוס — כפילת רדיוס מגדיל זרימה פי 16."},
+  {c:"ביולוגיה",e:"🧬",t:"הגן FOXP2 — 'גן השפה' — הוא מוטציה ייחודית לאדם וקשורה לפיתוח יכולות שפה. השימפנזה בעלת גרסה קדומה יותר של הגן."},
+  {c:"היסטוריה",e:"📜",t:"הדפסת ספרים באמצעות אותיות ניידות הומצאה בסין (ביאנג'שנג, 1040) — אך מכבש הדפוס של גוטנברג (1450) אירופאי הפיץ אותה בהיקף."},
+  {c:"מדע",e:"🔬",t:"'חוק הסנסציה' של ובר-פכנר: התגובה החושית גדלה בצורה לוגריתמית ביחס לעוצמת הגירוי — לכן שני נרות הם לא 'כפול' בהירות מנר אחד."},
+];
+
+// ── STATE ──
+let currentViewingDay = -1;
+
+function getTodayIndex() {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const diff = now - start;
+  const oneDay = 1000*60*60*24;
+  const dayOfYear = Math.floor(diff / oneDay);
+  return ((dayOfYear - 1 + FACTS.length) % FACTS.length);
+}
+
+function getState() {
+  try {
+    return JSON.parse(localStorage.getItem('kf_state') || '{}');
+  } catch(e) { return {}; }
+}
+
+function saveState(s) {
+  localStorage.setItem('kf_state', JSON.stringify(s));
+}
+
+function slugify(s) { return s.replace(/\s+/g,'-'); }
+
+// ── REMINDER ──
+function loadSettings() {
+  const s = getState();
+  const en = document.getElementById('reminderEnabled');
+  const h = document.getElementById('reminderHour');
+  const m = document.getElementById('reminderMin');
+  if (s.reminderEnabled) { en.checked = true; enableTimeRow(); }
+  if (s.reminderHour !== undefined) h.value = String(s.reminderHour).padStart(2,'0');
+  if (s.reminderMin !== undefined) m.value = String(s.reminderMin).padStart(2,'0');
+  updateReminderBadge();
+}
+
+function toggleReminder() {
+  const en = document.getElementById('reminderEnabled');
+  const tr = document.getElementById('timeRow');
+  if (en.checked) { enableTimeRow(); } else { tr.style.opacity='.4'; tr.style.pointerEvents='none'; }
+}
+
+function enableTimeRow() {
+  const tr = document.getElementById('timeRow');
+  tr.style.opacity='1'; tr.style.pointerEvents='all';
+}
+
+function padTime(el) {
+  let v = parseInt(el.value)||0;
+  const max = el.id==='reminderHour' ? 23 : 59;
+  v = Math.max(0, Math.min(max, v));
+  el.value = String(v).padStart(2,'0');
+}
+
+function updateReminderBadge() {
+  const s = getState();
+  const disp = document.getElementById('reminderDisplay');
+  if (s.reminderEnabled && s.reminderHour !== undefined) {
+    disp.textContent = `${String(s.reminderHour).padStart(2,'0')}:${String(s.reminderMin||0).padStart(2,'0')}`;
+  } else {
+    disp.textContent = 'לא הוגדר';
+  }
+}
+
+function saveSettings() {
+  const en = document.getElementById('reminderEnabled').checked;
+  const h = parseInt(document.getElementById('reminderHour').value)||8;
+  const m = parseInt(document.getElementById('reminderMin').value)||0;
+  const s = getState();
+  s.reminderEnabled = en;
+  s.reminderHour = h;
+  s.reminderMin = m;
+  saveState(s);
+  updateReminderBadge();
+  showToast('ההגדרות נשמרו ✓');
+  // try to request notification permission
+  if (en && 'Notification' in window) {
+    Notification.requestPermission().then(p => {
+      if (p === 'granted') scheduleNotification(h, m);
+    });
+  }
+}
+
+function scheduleNotification(h, m) {
+  // schedule for today if time not passed, else tomorrow
+  const now = new Date();
+  const target = new Date();
+  target.setHours(h, m, 0, 0);
+  if (target <= now) target.setDate(target.getDate()+1);
+  const ms = target - now;
+  setTimeout(() => {
+    new Notification('365 ימי ידע 📚', {
+      body: 'יש לך עובדה חדשה מחכה לך היום!',
+      icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">📚</text></svg>'
+    });
+  }, ms);
+}
+
+// ── STREAK ──
+function updateStreak() {
+  const s = getState();
+  const today = new Date().toDateString();
+  if (s.lastVisit === today) return; // already visited today
+
+  const yesterday = new Date(Date.now()-86400000).toDateString();
+  if (s.lastVisit === yesterday) {
+    s.streak = (s.streak||0)+1;
+  } else if (s.lastVisit !== today) {
+    s.streak = 1;
+  }
+  s.lastVisit = today;
+  s.seen = (s.seen||0)+1;
+  saveState(s);
+}
+
+// ── HOME ──
+function renderHome(idx) {
+  if (idx === undefined || idx === -1) idx = getTodayIndex();
+  currentViewingDay = idx;
+  const f = FACTS[idx];
+  const slug = slugify(f.c);
+
+  // theme
+  const home = document.getElementById('home');
+  home.className = 'view active theme-' + slug;
+
+  // day ring
+  document.getElementById('dayNum').textContent = idx+1;
+  const progress = ((idx+1)/365)*251.2;
+  const ring = document.getElementById('ringProgress');
+  ring.setAttribute('stroke-dashoffset', 251.2 - progress);
+  ring.setAttribute('stroke', getComputedStyle(document.documentElement).getPropertyValue('--accent') || '#4fc3f7');
+
+  // pill
+  document.getElementById('catIcon').textContent = f.e;
+  document.getElementById('catName').textContent = f.c;
+  document.getElementById('catPill').className = 'cat-pill';
+
+  // fact
+  document.getElementById('factText').textContent = f.t;
+  const now = new Date();
+  document.getElementById('factDateLabel').textContent =
+    `יום ${idx+1} מתוך 365 • ${now.toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'})}`;
+
+  // nav dots (show 5 around current)
+  const dotsEl = document.getElementById('navDots');
+  dotsEl.innerHTML = '';
+  const range = [-2,-1,0,1,2];
+  range.forEach(d => {
+    const i = (idx+d+365)%365;
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (d===0?' active':'');
+    dot.onclick = () => renderHome(i);
+    dotsEl.appendChild(dot);
+  });
+
+  // streak
+  const s = getState();
+  document.getElementById('streakNum').textContent = s.streak||0;
+  document.getElementById('totalSeen').textContent = s.seen||0;
+
+  updateReminderBadge();
+
+  // force accent color in ring
+  setTimeout(() => {
+    const accent = getComputedStyle(home).getPropertyValue('--accent').trim();
+    if (accent) ring.setAttribute('stroke', accent);
+  }, 50);
+}
+
+function prevFact() { renderHome((currentViewingDay-1+365)%365); }
+function nextFact() { renderHome((currentViewingDay+1)%365); }
+
+function shareToday() {
+  const f = FACTS[currentViewingDay];
+  const text = `📚 עובדת יום ${currentViewingDay+1} (${f.c}):\n${f.t}\n\n— 365 ימי ידע`;
+  navigator.clipboard.writeText(text).then(() => showToast('הועתק ✓'));
+}
+
+// ── ALL FACTS ──
+function renderAllFacts(query='') {
+  const grid = document.getElementById('factsGrid');
+  const noR = document.getElementById('noResults');
+  const q = query.trim().toLowerCase();
+  const filtered = FACTS.filter((f,i) => {
+    if (!q) return true;
+    return f.t.includes(query) || f.c.includes(query);
+  });
+  if (!filtered.length) { grid.innerHTML=''; noR.style.display='block'; return; }
+  noR.style.display='none';
+  const todayIdx = getTodayIndex();
+  grid.innerHTML = filtered.map((f, i) => {
+    const realIdx = FACTS.indexOf(f);
+    const slug = slugify(f.c);
+    const isToday = realIdx === todayIdx;
+    return `<div class="mini-card" style="border-right:3px solid ${catColor(f.c)};${isToday?'box-shadow:0 0 0 2px '+catColor(f.c)+', 0 4px 20px rgba(0,0,0,.3);':''}" onclick="showDay(${realIdx})">
+      <div class="mini-day">יום ${realIdx+1}${isToday?' • 📅 היום':''}</div>
+      <span class="mini-cat" style="background:${catColor(f.c)}22;color:${catColor(f.c)}">${f.e} ${f.c}</span>
+      <p class="mini-text">${f.t}</p>
+    </div>`;
+  }).join('');
+}
+
+function showDay(idx) {
+  showView('home');
+  renderHome(idx);
+}
+
+function filterFacts() {
+  renderAllFacts(document.getElementById('searchInput').value);
+}
+
+const CAT_COLORS = {
+  'מדע':'#4fc3f7','היסטוריה':'#ffb74d','טבע':'#81c784','גוף-האדם':'#f48fb1',
+  'חלל':'#ce93d8','גאוגרפיה':'#4dd0e1','מתמטיקה':'#fff176','פסיכולוגיה':'#f06292',
+  'טכנולוגיה':'#69f0ae','כלכלה':'#ffcc02','שפה':'#b39ddb','מוזיקה':'#ff8a65',
+  'ספורט':'#64b5f6','אוכל':'#ffab40','פילוסופיה':'#ef9a9a','ביולוגיה':'#a5d6a7',
+  'פיזיקה':'#90caf9','כימיה':'#80cbc4'
+};
+function catColor(c) { return CAT_COLORS[c] || '#888'; }
+
+// ── SETTINGS STATS ──
+function updateSettingsStats() {
+  const s = getState();
+  document.getElementById('statStreak').textContent = s.streak||0;
+  document.getElementById('statSeen').textContent = s.seen||0;
+  document.getElementById('statDay').textContent = getTodayIndex()+1;
+}
+
+function resetData() {
+  if (!confirm('לאפס את כל נתוני השימוש?')) return;
+  const s = getState();
+  delete s.streak; delete s.seen; delete s.lastVisit;
+  saveState(s);
+  renderHome();
+  updateSettingsStats();
+  showToast('הנתונים אופסו');
+}
+
+// ── VIEWS ──
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const navBtn = document.getElementById('nav-'+id);
+  if (navBtn) navBtn.classList.add('active');
+  window.scrollTo(0,0);
+  if (id==='allFacts') renderAllFacts();
+  if (id==='settings') updateSettingsStats();
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+// ── INIT ──
+updateStreak();
+renderHome(getTodayIndex());
+loadSettings();
+</script>
+</body>
+</html>
