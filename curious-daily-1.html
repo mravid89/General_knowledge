@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Curious Daily</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & BASE ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --white: #ffffff;
+  --off: #f9f7f4;
+  --ink: #1c1a17;
+  --mid: #6b6560;
+  --pale: #e8e4de;
+  --rule: #ede9e3;
+
+  /* category accent (JS will override via class) */
+  --accent: #2d6a4f;
+  --accent-light: #d8f0e6;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--white);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── VIEWS ── */
+.view { display: none; min-height: 100vh; }
+.view.active { display: flex; flex-direction: column; }
+
+/* ════════════════════════════════
+   HOME VIEW
+════════════════════════════════ */
+#home {
+  align-items: center;
+  justify-content: flex-start;
+  padding-bottom: 90px;
+}
+
+/* ── HEADER / LOGO ── */
+.site-header {
+  width: 100%;
+  padding: 22px 28px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--rule);
+  position: sticky;
+  top: 0;
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(12px);
+  z-index: 50;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* SVG Logo mark */
+.logo-mark {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+.logo-text .l1 {
+  font-family: 'Lora', serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.logo-text .l2 {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mid);
+  margin-top: 2px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.hbtn {
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--mid);
+  cursor: pointer;
+  transition: all .18s;
+  white-space: nowrap;
+}
+.hbtn:hover { border-color: var(--ink); color: var(--ink); }
+.hbtn.primary {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+}
+.hbtn.primary:hover { opacity: .85; }
+
+/* ── DATE STRIP ── */
+.date-strip {
+  width: 100%;
+  max-width: 680px;
+  margin: 32px auto 0;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.date-chip {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--mid);
+}
+
+.date-line {
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+
+.streak-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--mid);
+  letter-spacing: .04em;
+}
+.streak-chip .fire { font-size: 14px; }
+
+/* ── CATEGORY BADGE ── */
+.cat-badge {
+  margin: 28px auto 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 16px;
+  border-radius: 100px;
+  border: 1.5px solid var(--accent);
+  background: var(--accent-light);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  transition: all .4s ease;
+}
+.cat-emoji { font-size: 14px; }
+
+/* ── MAIN CARD ── */
+.card-wrap {
+  width: 100%;
+  max-width: 680px;
+  margin: 20px auto 0;
+  padding: 0 24px;
+}
+
+.fact-card {
+  background: var(--off);
+  border: 1px solid var(--rule);
+  border-radius: 20px;
+  padding: 40px 44px 36px;
+  position: relative;
+  overflow: hidden;
+  animation: cardReveal .55s cubic-bezier(.16,1,.3,1) both;
+}
+
+@keyframes cardReveal {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* decorative quote mark */
+.fact-card::before {
+  content: '\201C';
+  position: absolute;
+  top: -8px;
+  right: 32px;
+  font-family: 'Lora', serif;
+  font-size: 9rem;
+  font-weight: 700;
+  color: var(--accent);
+  opacity: .07;
+  line-height: 1;
+  pointer-events: none;
+  transition: color .4s;
+}
+
+.fact-text {
+  font-family: 'Lora', serif;
+  font-size: clamp(1.08rem, 2.4vw, 1.26rem);
+  font-weight: 400;
+  line-height: 1.8;
+  color: var(--ink);
+  position: relative;
+  z-index: 1;
+}
+
+.fact-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--pale);
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.fact-meta {
+  font-size: 11.5px;
+  color: var(--mid);
+  font-weight: 400;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.icon-btn {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--rule);
+  background: var(--white);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  transition: all .18s;
+  color: var(--mid);
+}
+.icon-btn:hover { border-color: var(--ink); color: var(--ink); transform: scale(1.05); }
+
+/* ── NAV DOTS ── */
+.fact-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 24px auto 0;
+  max-width: 680px;
+  padding: 0 24px;
+}
+
+.nav-arrow {
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 8px 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--mid);
+  cursor: pointer;
+  transition: all .18s;
+}
+.nav-arrow:hover { border-color: var(--ink); color: var(--ink); }
+
+.dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--pale);
+  cursor: pointer;
+  transition: all .2s;
+}
+.dot.active {
+  background: var(--ink);
+  width: 20px;
+  border-radius: 3px;
+}
+
+/* ── STREAK / INFO BAR ── */
+.info-bar {
+  width: 100%;
+  max-width: 680px;
+  margin: 20px auto 0;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.info-tile {
+  background: var(--off);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.info-tile-icon { font-size: 22px; }
+.info-tile-body {}
+.info-tile-num {
+  font-family: 'Lora', serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--ink);
+}
+.info-tile-label {
+  font-size: 11px;
+  color: var(--mid);
+  font-weight: 500;
+  margin-top: 3px;
+  letter-spacing: .03em;
+}
+
+/* ── REMINDER TILE ── */
+.reminder-tile {
+  width: 100%;
+  max-width: 680px;
+  margin: 10px auto 0;
+  padding: 0 24px;
+}
+
+.reminder-row {
+  background: var(--off);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: border-color .18s;
+}
+.reminder-row:hover { border-color: var(--ink); }
+.reminder-row .r-icon { font-size: 18px; }
+.reminder-row .r-text { flex: 1; font-size: 13px; color: var(--mid); }
+.reminder-row .r-time { font-size: 13px; font-weight: 600; color: var(--ink); }
+.reminder-row .r-edit { font-size: 11px; color: var(--mid); }
+
+/* ════════════════════════════════
+   ALL FACTS VIEW
+════════════════════════════════ */
+#allFacts {
+  background: var(--white);
+}
+
+.view-top {
+  position: sticky;
+  top: 0;
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--rule);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  z-index: 50;
+  flex-wrap: wrap;
+}
+
+.view-title {
+  font-family: 'Lora', serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  flex: 1;
+}
+
+.search-box {
+  position: relative;
+}
+.search-box input {
+  background: var(--off);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 9px 14px 9px 36px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: var(--ink);
+  outline: none;
+  width: 220px;
+  transition: border .2s;
+}
+.search-box input:focus { border-color: var(--ink); }
+.search-box input::placeholder { color: var(--mid); }
+.search-ico { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--mid); font-size: 14px; pointer-events: none; }
+
+.facts-content {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 28px 20px 80px;
+}
+
+.cat-section { margin-bottom: 36px; }
+.cat-section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule);
+}
+.cat-section-title {
+  font-family: 'Lora', serif;
+  font-size: .95rem;
+  font-weight: 600;
+}
+.cat-count {
+  font-size: 11px;
+  color: var(--mid);
+  font-weight: 500;
+  background: var(--off);
+  border: 1px solid var(--rule);
+  border-radius: 20px;
+  padding: 2px 8px;
+}
+
+.facts-grid {
+  columns: 300px;
+  column-gap: 12px;
+}
+
+.mini-card {
+  break-inside: avoid;
+  background: var(--off);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all .18s;
+  border-right: 3px solid var(--accent);
+}
+.mini-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,.08);
+  transform: translateY(-2px);
+}
+.mini-card.today-card {
+  background: var(--accent-light);
+  border-color: var(--accent);
+}
+
+.mini-card-num { font-size: 10px; color: var(--mid); margin-bottom: 5px; font-weight: 500; }
+.mini-card-text { font-family: 'Lora', serif; font-size: 13px; line-height: 1.6; color: #333; }
+
+/* ════════════════════════════════
+   SETTINGS VIEW
+════════════════════════════════ */
+#settings { background: var(--white); }
+
+.settings-body {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 28px 20px 80px;
+}
+
+.s-section {
+  background: var(--off);
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  padding: 22px;
+  margin-bottom: 14px;
+}
+.s-section h3 {
+  font-family: 'Lora', serif;
+  font-size: .85rem;
+  color: var(--mid);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.s-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(0,0,0,.04);
+}
+.s-row:last-child { border-bottom: none; }
+.s-label { font-size: 14px; color: var(--ink); font-weight: 400; }
+.s-sub { font-size: 11px; color: var(--mid); margin-top: 2px; }
+
+/* toggle */
+.toggle { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+.toggle input { opacity: 0; position: absolute; }
+.toggle-track {
+  position: absolute; inset: 0;
+  background: var(--pale);
+  border-radius: 24px;
+  cursor: pointer;
+  transition: .25s;
+}
+.toggle-track::after {
+  content: '';
+  position: absolute;
+  left: 3px; top: 3px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,.15);
+  transition: .25s;
+}
+.toggle input:checked + .toggle-track { background: var(--ink); }
+.toggle input:checked + .toggle-track::after { transform: translateX(20px); }
+
+/* time picker */
+.time-pick { display: flex; align-items: center; gap: 6px; }
+.tnum {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  width: 54px;
+  padding: 8px 0;
+  text-align: center;
+  font-family: 'Lora', serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ink);
+  outline: none;
+  transition: border .2s;
+}
+.tnum:focus { border-color: var(--ink); }
+.tsep { font-size: 1.2rem; font-weight: 700; color: var(--mid); }
+
+.save-btn {
+  width: 100%;
+  padding: 15px;
+  border-radius: 12px;
+  border: none;
+  background: var(--ink);
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: .02em;
+  transition: opacity .2s;
+  margin-top: 8px;
+}
+.save-btn:hover { opacity: .85; }
+
+/* ── NAV BAR ── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(255,255,255,.97);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid var(--rule);
+  display: flex;
+  z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 0 12px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  color: var(--mid);
+  transition: color .18s;
+}
+.nav-btn .nav-ico { font-size: 20px; }
+.nav-btn.active { color: var(--ink); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 80px; left: 50%;
+  transform: translateX(-50%) translateY(14px);
+  background: var(--ink);
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0;
+  transition: all .28s;
+  z-index: 999;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── CATEGORY ACCENT THEMES ── */
+.cat-Science      { --accent: #1d6fa4; --accent-light: #e6f2fb; }
+.cat-History      { --accent: #b06000; --accent-light: #fdf2e0; }
+.cat-Nature       { --accent: #2d6a4f; --accent-light: #e6f5ed; }
+.cat-HumanBody    { --accent: #c23b5a; --accent-light: #fce8ec; }
+.cat-Space        { --accent: #5b3d9e; --accent-light: #ede8f8; }
+.cat-Geography    { --accent: #1a7a7a; --accent-light: #e4f5f5; }
+.cat-Mathematics  { --accent: #7a6200; --accent-light: #fdf8e0; }
+.cat-Psychology   { --accent: #a0365a; --accent-light: #fae8ed; }
+.cat-Technology   { --accent: #1a6a2e; --accent-light: #e4f5e8; }
+.cat-Economics    { --accent: #7a4500; --accent-light: #fdf0e0; }
+.cat-Language     { --accent: #6040a0; --accent-light: #ece8f8; }
+.cat-Music        { --accent: #a03060; --accent-light: #fae8f0; }
+.cat-Sports       { --accent: #1a4a8a; --accent-light: #e4eaf8; }
+.cat-Food         { --accent: #8a4800; --accent-light: #fdf0e2; }
+.cat-Philosophy   { --accent: #7a3030; --accent-light: #f8e8e8; }
+.cat-Biology      { --accent: #2a6a2a; --accent-light: #e8f5e8; }
+.cat-Physics      { --accent: #1a4a6a; --accent-light: #e4eef8; }
+.cat-Chemistry    { --accent: #2a6a6a; --accent-light: #e4f5f5; }
+
+main { padding-bottom: 70px; }
+</style>
+</head>
+<body>
+
+<!-- ════════ HOME ════════ -->
+<div id="home" class="view active">
+  <header class="site-header">
+    <div class="logo" onclick="showView('home')">
+      <!-- Logo SVG: open book with a spark -->
+      <svg class="logo-mark" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- book pages -->
+        <path d="M18 28C18 28 6 23 6 12V9C6 9 12 10 18 15C24 10 30 9 30 9V12C30 23 18 28 18 28Z" fill="#1c1a17" opacity=".08"/>
+        <path d="M18 27C18 27 7 22.5 7 12.5V10C7 10 12.5 11 18 15.5V27Z" fill="#1c1a17" opacity=".7"/>
+        <path d="M18 27C18 27 29 22.5 29 12.5V10C29 10 23.5 11 18 15.5V27Z" fill="#1c1a17" opacity=".4"/>
+        <!-- spine line -->
+        <line x1="18" y1="15.5" x2="18" y2="27" stroke="white" stroke-width="1" opacity=".6"/>
+        <!-- sparkle star -->
+        <path d="M27 6 L27.8 8.2 L30 8.2 L28.3 9.6 L29 12 L27 10.5 L25 12 L25.7 9.6 L24 8.2 L26.2 8.2 Z" fill="#1c1a17" opacity=".85"/>
+        <!-- small dots -->
+        <circle cx="10" cy="8" r="1" fill="#1c1a17" opacity=".3"/>
+        <circle cx="13" cy="6" r=".7" fill="#1c1a17" opacity=".25"/>
+      </svg>
+      <div class="logo-text">
+        <span class="l1">Curious Daily</span>
+        <span class="l2">One fact, every day</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="hbtn" onclick="showView('allFacts')">All Facts</button>
+      <button class="hbtn primary" onclick="showView('settings')">⚙ Settings</button>
+    </div>
+  </header>
+
+  <div class="date-strip">
+    <span class="date-chip" id="dateChip">Monday, Jan 1</span>
+    <span class="date-line"></span>
+    <span class="streak-chip"><span class="fire">🔥</span> <span id="streakDisplay">0</span> day streak</span>
+  </div>
+
+  <div style="display:flex; justify-content:center; margin-top:28px;">
+    <div class="cat-badge" id="catBadge">
+      <span class="cat-emoji" id="catEmoji">🔬</span>
+      <span id="catName">Science</span>
+    </div>
+  </div>
+
+  <div class="card-wrap">
+    <div class="fact-card" id="factCard">
+      <p class="fact-text" id="factText">Loading today's fact…</p>
+      <div class="fact-footer">
+        <span class="fact-meta" id="factMeta"></span>
+        <div class="card-actions">
+          <button class="icon-btn" title="Copy" onclick="copyFact()">📋</button>
+          <button class="icon-btn" title="Share" onclick="shareFact()">↗</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fact-nav">
+    <button class="nav-arrow" onclick="prevFact()">← Yesterday</button>
+    <div class="dots" id="navDots"></div>
+    <button class="nav-arrow" onclick="nextFact()">Tomorrow →</button>
+  </div>
+
+  <div class="info-bar">
+    <div class="info-tile">
+      <span class="info-tile-icon">🔥</span>
+      <div class="info-tile-body">
+        <div class="info-tile-num" id="streakNum">0</div>
+        <div class="info-tile-label">Day streak</div>
+      </div>
+    </div>
+    <div class="info-tile">
+      <span class="info-tile-icon">📚</span>
+      <div class="info-tile-body">
+        <div class="info-tile-num" id="seenNum">0</div>
+        <div class="info-tile-label">Facts seen</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reminder-tile">
+    <div class="reminder-row" onclick="showView('settings')">
+      <span class="r-icon">🔔</span>
+      <span class="r-text">Daily reminder</span>
+      <span class="r-time" id="reminderDisplay">Not set</span>
+      <span class="r-edit">Edit →</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ ALL FACTS ════════ -->
+<div id="allFacts" class="view">
+  <div class="view-top">
+    <button class="hbtn" onclick="showView('home')">← Back</button>
+    <span class="view-title">All Facts</span>
+    <div class="search-box">
+      <span class="search-ico">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search facts…" oninput="filterFacts()">
+    </div>
+  </div>
+  <div class="facts-content" id="factsContent"></div>
+</div>
+
+<!-- ════════ SETTINGS ════════ -->
+<div id="settings" class="view">
+  <div class="view-top">
+    <button class="hbtn" onclick="showView('home')">← Back</button>
+    <span class="view-title">Settings</span>
+  </div>
+  <div class="settings-body">
+
+    <div class="s-section">
+      <h3>🔔 Daily Reminder</h3>
+      <div class="s-row">
+        <div>
+          <div class="s-label">Enable reminder</div>
+          <div class="s-sub">Get a daily nudge to open the app</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="remEnabled" onchange="toggleTimeRow()">
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+      <div class="s-row" id="timeRow" style="opacity:.35;pointer-events:none">
+        <div class="s-label">Reminder time</div>
+        <div class="time-pick">
+          <input type="number" class="tnum" id="remHour" value="08" min="0" max="23" onchange="padNum(this,23)">
+          <span class="tsep">:</span>
+          <input type="number" class="tnum" id="remMin" value="00" min="0" max="59" onchange="padNum(this,59)">
+        </div>
+      </div>
+    </div>
+
+    <div class="s-section">
+      <h3>📊 Stats</h3>
+      <div class="s-row">
+        <span class="s-label">Current streak</span>
+        <span style="font-family:'Lora',serif;font-weight:600;" id="sSt">0</span>
+      </div>
+      <div class="s-row">
+        <span class="s-label">Facts seen</span>
+        <span style="font-family:'Lora',serif;font-weight:600;" id="sSn">0</span>
+      </div>
+    </div>
+
+    <div class="s-section">
+      <h3>⚠ Reset</h3>
+      <div class="s-row">
+        <div>
+          <div class="s-label">Reset usage data</div>
+          <div class="s-sub">Clears streak and seen count</div>
+        </div>
+        <button class="hbtn" style="color:#c23b5a;border-color:#c23b5a" onclick="resetData()">Reset</button>
+      </div>
+    </div>
+
+    <button class="save-btn" onclick="saveSettings()">Save Settings</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" id="nav-home" onclick="showView('home')">
+    <span class="nav-ico">✦</span>Today
+  </button>
+  <button class="nav-btn" id="nav-allFacts" onclick="showView('allFacts')">
+    <span class="nav-ico">📚</span>All Facts
+  </button>
+  <button class="nav-btn" id="nav-settings" onclick="showView('settings')">
+    <span class="nav-ico">⚙</span>Settings
+  </button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════════════
+//  365 VERIFIED FACTS — English — 18 categories
+// ════════════════════════════════════════════════════════
+const FACTS = [
+  // Science
+  {c:"Science",s:"Science",e:"🔬",t:"The speed of light in a vacuum is exactly 299,792,458 metres per second — a value so precisely defined that it's used to set the length of a metre itself."},
+  {c:"Science",s:"Science",e:"🔬",t:"Absolute zero (−273.15 °C) is the coldest possible temperature. At this point, particles stop all thermal motion — it is a hard lower limit set by the laws of physics."},
+  {c:"Science",s:"Science",e:"🔬",t:"The 1887 Michelson–Morley experiment failed to detect the 'luminiferous aether', proving the speed of light is constant in every direction — a pillar of Einstein's relativity."},
+  {c:"Science",s:"Science",e:"🔬",t:"Penicillin was discovered in 1928 by Alexander Fleming, who noticed that a mould contaminating his petri dish was killing the surrounding bacteria."},
+  {c:"Science",s:"Science",e:"🔬",t:"Radio waves, infrared, visible light, ultraviolet, X-rays, and gamma rays are all electromagnetic radiation — the only difference between them is wavelength."},
+  {c:"Science",s:"Science",e:"🔬",t:"Liquid oxygen is pale blue. In its gas form it is colourless, but as a liquid the O₂ molecules absorb red-orange light and reflect blue."},
+  {c:"Science",s:"Science",e:"🔬",t:"The First Law of Thermodynamics states that energy can neither be created nor destroyed — only converted from one form to another."},
+  {c:"Science",s:"Science",e:"🔬",t:"Thomas Young's double-slit experiment (1801) proved that light behaves as a wave by producing an interference pattern when passed through two narrow slits."},
+  {c:"Science",s:"Science",e:"🔬",t:"The atmospheric pressure on every square centimetre of your body is about 1 kg. You don't feel it because your internal pressure balances it perfectly."},
+  {c:"Science",s:"Science",e:"🔬",t:"Wilhelm Röntgen discovered X-rays by accident in 1895 when he noticed a vacuum tube was making a fluorescent screen glow across a darkened room."},
+  {c:"Science",s:"Science",e:"🔬",t:"The strong nuclear force holds protons and neutrons together in an atomic nucleus — it is the most powerful of the four fundamental forces over short distances."},
+  {c:"Science",s:"Science",e:"🔬",t:"The water molecule (H₂O) is polar: oxygen pulls electrons more strongly than hydrogen, creating a partial negative charge near the oxygen end."},
+  {c:"Science",s:"Science",e:"🔬",t:"Nylon was invented in 1935 at DuPont. It was the first fully synthetic textile fibre, made entirely from coal, water, and air through chemical synthesis."},
+  {c:"Science",s:"Science",e:"🔬",t:"AM radio signals bounce off the ionosphere and can travel vast distances at night; FM signals pass straight through it, which is why FM range is limited."},
+  {c:"Science",s:"Science",e:"🔬",t:"Maxwell's four equations (1865) unified electricity and magnetism into a single force — electromagnetism — one of the greatest unifications in physics."},
+  {c:"Science",s:"Science",e:"🔬",t:"Archimedes' principle states that buoyancy equals the weight of fluid displaced — said to have prompted the famous 'Eureka!' shout in his bath."},
+  {c:"Science",s:"Science",e:"🔬",t:"The Mpemba effect describes cases where hot water can freeze faster than cold water under certain conditions — documented and named in 1963."},
+  {c:"Science",s:"Science",e:"🔬",t:"A 'mole' in chemistry is exactly 6.022 × 10²³ particles — the Avogadro constant — and links atomic-scale quantities to laboratory-scale masses."},
+  {c:"Science",s:"Science",e:"🔬",t:"Moore's Law (1965) predicted that the number of transistors on a chip would double roughly every two years — a trend that held true for over five decades."},
+  {c:"Science",s:"Science",e:"🔬",t:"Nuclear zero-point energy means particles never truly rest even at absolute zero — the uncertainty principle forbids complete stillness."},
+  // History
+  {c:"History",s:"History",e:"📜",t:"The Western Roman Empire fell in AD 476, but the Eastern (Byzantine) Empire continued for nearly another thousand years, until 1453."},
+  {c:"History",s:"History",e:"📜",t:"Magna Carta was signed in 1215 by King John of England — the first document to formally limit a monarch's power and is considered a cornerstone of modern democracy."},
+  {c:"History",s:"History",e:"📜",t:"The Black Death killed between one-third and one-half of Europe's population between 1347 and 1351 — roughly 25 million people."},
+  {c:"History",s:"History",e:"📜",t:"Alexander the Great conquered around 5 million km² by the age of 30 — from Greece to northwestern India — and never lost a battle."},
+  {c:"History",s:"History",e:"📜",t:"Columbus did not prove the Earth was round. Greek scholars already knew this; Eratosthenes calculated Earth's circumference with impressive accuracy around 240 BC."},
+  {c:"History",s:"History",e:"📜",t:"Julius Caesar was assassinated on the Ides of March, 44 BC, stabbed 23 times by a group of senators including Brutus. Only one wound was considered fatal."},
+  {c:"History",s:"History",e:"📜",t:"The Manhattan Project employed over 130,000 people at its peak and cost roughly $2 billion — equivalent to about $30 billion today."},
+  {c:"History",s:"History",e:"📜",t:"Cuneiform script, developed by the Sumerians around 3400 BC, is one of the earliest writing systems and was used primarily to record commercial transactions."},
+  {c:"History",s:"History",e:"📜",t:"The Mongol Empire was the largest contiguous land empire in history — at its peak in 1270 it stretched across 24 million km²."},
+  {c:"History",s:"History",e:"📜",t:"The Treaty of Versailles (1919) placed sole blame for World War I on Germany and imposed crippling reparations — conditions that contributed to the rise of Nazism."},
+  {c:"History",s:"History",e:"📜",t:"The 1918–19 Spanish Flu killed 50–100 million people worldwide — more than all the combat deaths of World War I."},
+  {c:"History",s:"History",e:"📜",t:"Tutankhamun's tomb was discovered in 1922 by Howard Carter nearly intact and unlooted — one of the most extraordinary archaeological finds ever made."},
+  {c:"History",s:"History",e:"📜",t:"The Titanic sank on 15 April 1912, two hours and 40 minutes after striking an iceberg. About 1,500 of the 2,224 people on board perished."},
+  {c:"History",s:"History",e:"📜",t:"The Berlin Wall fell on 9 November 1989 — one of the most symbolic moments of the 20th century and a signal of the Cold War's end."},
+  {c:"History",s:"History",e:"📜",t:"The French Revolution (1789–1799) abolished the monarchy, led to the execution of Louis XVI in 1793, and ultimately brought Napoleon Bonaparte to power."},
+  {c:"History",s:"History",e:"📜",t:"Large sections of the Great Wall of China were built during the Ming Dynasty (1368–1644), not in ancient times as is often assumed."},
+  {c:"History",s:"History",e:"📜",t:"In 1800 fewer than 3% of the world's population lived in cities. Today more than 55% do — a transformation driven largely by industrialisation."},
+  {c:"History",s:"History",e:"📜",t:"ENIAC, the first general-purpose electronic computer, launched in 1945. It weighed 27 tonnes, occupied 167 m², and could perform 5,000 additions per second."},
+  {c:"History",s:"History",e:"📜",t:"On 29 October 1969, ARPANET sent its first message: the word 'LOGIN'. The system crashed after just two letters — 'L' and 'O'."},
+  {c:"History",s:"History",e:"📜",t:"On 20 July 1969, Neil Armstrong and Buzz Aldrin landed on the Moon. Armstrong became the first human to walk on its surface."},
+  // Nature
+  {c:"Nature",s:"Nature",e:"🌿",t:"Giant sequoias are the largest plants on Earth by volume. 'General Sherman' in California weighs about 1,385 tonnes — heavier than any living animal."},
+  {c:"Nature",s:"Nature",e:"🌿",t:"Dolphins sleep with half their brain at a time — one hemisphere stays awake to control breathing and watch for danger. This is called unihemispheric sleep."},
+  {c:"Nature",s:"Nature",e:"🌿",t:"Octopuses can change colour and texture in a fraction of a second. Most species are colour-blind, yet they achieve near-perfect camouflage."},
+  {c:"Nature",s:"Nature",e:"🌿",t:"Honeybees perform a 'waggle dance' to tell their hive-mates the precise direction and distance to a food source, using the sun's angle as a reference."},
+  {c:"Nature",s:"Nature",e:"🌿",t:"The Great Barrier Reef is the largest biological structure on Earth at 2,300 km long, and the only living thing visible from space with the naked eye."},
+  {c:"Nature",s:"Nature",e:"🌿",t:"The blue whale is the largest animal ever known to have lived. Its heart alone weighs about 400 kg — roughly the size of a small car."},
+  {c:"Nature",s:"Nature",e:"🌿",t:"Trees communicate chemically: when attacked by insects, many species release volatile compounds that warn neighbouring trees to ramp up their own defences."},
+  {c:"Nature",s:"Nature",e:"🌿",t:"The tardigrade (water bear) can survive the vacuum of space, intense radiation, and temperatures from −272 °C to 150 °C."},
+  {c:"Nature",s:"Nature",e:"🌿",t:"Hummingbirds are the only birds capable of flying backwards. They beat their wings 50–80 times per second to hover in mid-air."},
+  {c:"Nature",s:"Nature",e:"🌿",t:"Baobab trees in Africa can store up to 120,000 litres of water in their enormous trunks — a vital adaptation to dry, seasonal climates."},
+  {c:"Nature",s:"Nature",e:"🌿",t:"Tropical rainforests cover about 6% of Earth's surface but contain more than 50% of the world's known plant and animal species."},
+  {c:"Nature",s:"Nature",e:"🌿",t:"Jellyfish are roughly 95% water and have no brain, heart, lungs, or bones — yet they have existed for about 500 million years, predating the dinosaurs."},
+  {c:"Nature",s:"Nature",e:"🌿",t:"Fungi are genetically closer to animals than to plants. They form their own kingdom and include some of the world's largest organisms."},
+  {c:"Nature",s:"Nature",e:"🌿",t:"The whale shark is the largest fish alive, growing up to 18 metres long. Despite its enormous size, it feeds by filtering tiny plankton from the water."},
+  {c:"Nature",s:"Nature",e:"🌿",t:"The snow leopard cannot roar — its hyoid bone is too flexible. Instead it makes a chuffing sound called a 'prusten', similar to a domestic cat's purr."},
+  {c:"Nature",s:"Nature",e:"🌿",t:"Trees in a forest share nutrients and chemical signals through an underground fungal network sometimes called the 'Wood Wide Web'."},
+  {c:"Nature",s:"Nature",e:"🌿",t:"The Arctic tern migrates about 70,000 km per year — the longest migration of any known animal — travelling from the Arctic to the Antarctic and back."},
+  {c:"Nature",s:"Nature",e:"🌿",t:"Spider silk is, gram for gram, about five times stronger than steel and three times tougher than Kevlar, making it one of nature's most remarkable materials."},
+  {c:"Nature",s:"Nature",e:"🌿",t:"The male octopus dies shortly after mating. The female guards her eggs without eating until they hatch — a process that can take months."},
+  {c:"Nature",s:"Nature",e:"🌿",t:"Hexagonal cells in a honeycomb are the most efficient shape for maximising storage area while using the minimum amount of wax."},
+  // Human Body
+  {c:"Human Body",s:"HumanBody",e:"🫀",t:"The human heart beats roughly 100,000 times a day, pumping about 7,570 litres of blood — over a lifetime that amounts to around 3 billion beats."},
+  {c:"Human Body",s:"HumanBody",e:"🫀",t:"The human brain contains about 86 billion neurons with 100 trillion synaptic connections — more connections than there are stars in the observable universe."},
+  {c:"Human Body",s:"HumanBody",e:"🫀",t:"The skin is the body's largest organ. In an adult it covers about 1.8 m², weighs around 5 kg, and completely renews itself every two to four weeks."},
+  {c:"Human Body",s:"HumanBody",e:"🫀",t:"The human body contains about 37 trillion cells. Around 330 billion of them are replaced every single day — mainly red blood cells and skin cells."},
+  {c:"Human Body",s:"HumanBody",e:"🫀",t:"If all the blood vessels in one adult body were laid end to end, they would stretch about 100,000 km — two and a half times around the Earth."},
+  {c:"Human Body",s:"HumanBody",e:"🫀",t:"Babies are born with 270–300 bones; adults have 206. The difference occurs because many small bones gradually fuse together during childhood and adolescence."},
+  {c:"Human Body",s:"HumanBody",e:"🫀",t:"The liver performs over 500 functions, including producing bile, detoxifying the blood, storing glycogen, and synthesising plasma proteins."},
+  {c:"Human Body",s:"HumanBody",e:"🫀",t:"Fully unfolded, the inner surface of human lungs would cover roughly 70 m² — about the floor area of a small apartment — thanks to their intricate alveolar structure."},
+  {c:"Human Body",s:"HumanBody",e:"🫀",t:"About 60% of the human body is water. The brain is 75% water, and even bones contain around 22% water by weight."},
+  {c:"Human Body",s:"HumanBody",e:"🫀",t:"Red blood cells are produced at a rate of about 2 million per second, all manufactured inside the bone marrow of flat bones."},
+  {c:"Human Body",s:"HumanBody",e:"🫀",t:"Tooth enamel is the hardest substance in the human body — harder than bone — but it is brittle and cannot regenerate once worn away."},
+  {c:"Human Body",s:"HumanBody",e:"🫀",t:"The cornea of the eye is the only body tissue with no direct blood supply; it receives oxygen directly from the air and from tears."},
+  {c:"Human Body",s:"HumanBody",e:"🫀",t:"About 8% of the human genome consists of ancient viral DNA that integrated into our ancestors' chromosomes millions of years ago."},
+  {c:"Human Body",s:"HumanBody",e:"🫀",t:"Hair cells in the inner ear do not regenerate once damaged. This is why noise-induced hearing loss is permanent."},
+  {c:"Human Body",s:"HumanBody",e:"🫀",t:"During deep sleep, the brain clears metabolic waste through the glymphatic system — a process strongly linked to lower risk of Alzheimer's disease."},
+  {c:"Human Body",s:"HumanBody",e:"🫀",t:"Protein-coding genes make up less than 2% of the human genome. The remaining 98% includes regulatory sequences, non-coding RNA, and ancient genomic remnants."},
+  {c:"Human Body",s:"HumanBody",e:"🫀",t:"The DNA in a single human cell, if fully stretched out, would be about 2 metres long — yet it is compactly folded inside a nucleus just 6 micrometres wide."},
+  {c:"Human Body",s:"HumanBody",e:"🫀",t:"The body produces about 1–1.5 litres of saliva per day. Saliva contains digestive enzymes that begin breaking down starches before food even reaches the stomach."},
+  {c:"Human Body",s:"HumanBody",e:"🫀",t:"Neurons are among the longest-lived cells in the body — some accompany you from birth to death without dividing or being replaced."},
+  {c:"Human Body",s:"HumanBody",e:"🫀",t:"The human sense of smell can distinguish up to one trillion different odours, according to a 2014 study — far more than the 10,000 previously assumed."},
+  // Space
+  {c:"Space",s:"Space",e:"🌌",t:"The Sun accounts for 99.86% of the total mass of the solar system. All planets, moons, asteroids, and comets together make up just 0.14%."},
+  {c:"Space",s:"Space",e:"🌌",t:"Light from the Sun takes about 8 minutes and 20 seconds to reach Earth. Light from the nearest other star (Proxima Centauri) takes 4.2 years."},
+  {c:"Space",s:"Space",e:"🌌",t:"Venus rotates backwards compared to most planets, and so slowly that one Venusian day is longer than one Venusian year."},
+  {c:"Space",s:"Space",e:"🌌",t:"Neutron stars are so dense that a teaspoon of their matter would weigh about a billion tonnes on Earth."},
+  {c:"Space",s:"Space",e:"🌌",t:"The Moon is gradually moving away from Earth at about 3.8 cm per year due to tidal interactions."},
+  {c:"Space",s:"Space",e:"🌌",t:"Saturn is less dense than water — if you could find an ocean large enough, Saturn would float in it."},
+  {c:"Space",s:"Space",e:"🌌",t:"The observable universe contains an estimated 10²⁴ stars — more than all the grains of sand on every beach and desert on Earth."},
+  {c:"Space",s:"Space",e:"🌌",t:"The International Space Station orbits Earth about 15.5 times per day at roughly 27,600 km/h."},
+  {c:"Space",s:"Space",e:"🌌",t:"Dark energy and dark matter together make up about 95% of the universe's content. All the visible matter we know — stars, planets, gas — is only about 5%."},
+  {c:"Space",s:"Space",e:"🌌",t:"The Orion Nebula, 1,344 light-years away, is one of the most active star-forming regions in the Milky Way."},
+  {c:"Space",s:"Space",e:"🌌",t:"Jupiter has more than 95 known moons. Its largest, Ganymede, is bigger than the planet Mercury."},
+  {c:"Space",s:"Space",e:"🌌",t:"Pulsars are rapidly spinning neutron stars that emit radiation with the precision of an atomic clock — they have been used to test general relativity."},
+  {c:"Space",s:"Space",e:"🌌",t:"The Big Bang was not an explosion of matter into empty space — it was the expansion of space itself, beginning about 13.8 billion years ago."},
+  {c:"Space",s:"Space",e:"🌌",t:"Gravitational waves were first detected in 2015 by LIGO. They were produced by two black holes merging 1.3 billion years ago."},
+  {c:"Space",s:"Space",e:"🌌",t:"Olympus Mons on Mars is the tallest volcano in the solar system at 22 km high — about two and a half times the height of Mount Everest."},
+  {c:"Space",s:"Space",e:"🌌",t:"The cosmic microwave background radiation is the 'afterglow' of the Big Bang, still detectable as faint microwaves arriving from every direction in space."},
+  {c:"Space",s:"Space",e:"🌌",t:"Uranus rotates on its side — its axial tilt is about 98°, likely the result of a massive ancient collision."},
+  {c:"Space",s:"Space",e:"🌌",t:"Voyager 1, launched in 1977, crossed into interstellar space in 2012 and as of 2026 is over 24 billion km from Earth — the most distant human-made object."},
+  {c:"Space",s:"Space",e:"🌌",t:"Cosmic rays — high-energy particles from outer space — pass through your body at a rate of millions per second without you ever noticing."},
+  {c:"Space",s:"Space",e:"🌌",t:"Every second, the Sun fuses about 600 million tonnes of hydrogen into helium, releasing the energy that lights our solar system."},
+  // Geography
+  {c:"Geography",s:"Geography",e:"🌍",t:"Antarctica holds about 60% of the world's fresh water, locked in its ice sheet."},
+  {c:"Geography",s:"Geography",e:"🌍",t:"The Dead Sea, at 430 m below sea level, is the lowest point on Earth's surface. Its salinity is about ten times that of the average ocean."},
+  {c:"Geography",s:"Geography",e:"🌍",t:"The Pacific Ocean is larger than all of Earth's landmasses combined. Its deepest point, the Mariana Trench, reaches 11,034 m below the surface."},
+  {c:"Geography",s:"Geography",e:"🌍",t:"The Amazon River carries about 20% of all fresh water flowing into the world's oceans. At its mouth it can be up to 80 km wide during the wet season."},
+  {c:"Geography",s:"Geography",e:"🌍",t:"Canada has the longest coastline in the world — over 202,000 km, including its many Arctic islands."},
+  {c:"Geography",s:"Geography",e:"🌍",t:"Mount Everest grows about 4 mm taller each year as the Indian tectonic plate continues to push into the Eurasian plate — confirmed by GPS measurements."},
+  {c:"Geography",s:"Geography",e:"🌍",t:"The Sahara is the world's largest hot desert — larger than the contiguous United States — but only about 25% of it is sand; the rest is rock and gravel."},
+  {c:"Geography",s:"Geography",e:"🌍",t:"Indonesia is made up of more than 17,000 islands, of which about 6,000 are inhabited. End to end, it would span the width of the continental United States."},
+  {c:"Geography",s:"Geography",e:"🌍",t:"Australia is the flattest continent on average, with a mean elevation of just 330 metres above sea level."},
+  {c:"Geography",s:"Geography",e:"🌍",t:"The Sea of Galilee (Lake Kinneret) is the lowest freshwater lake in the world at 209 m below sea level, and Israel's main freshwater reservoir."},
+  {c:"Geography",s:"Geography",e:"🌍",t:"The point on land farthest from any ocean is in the Xinjiang region of China, approximately 2,645 km from the nearest coast."},
+  {c:"Geography",s:"Geography",e:"🌍",t:"Russia is the world's largest country at 17.1 million km² — it spans 11 time zones and borders both Europe and Asia."},
+  {c:"Geography",s:"Geography",e:"🌍",t:"New Zealand was one of the last habitable landmasses to be settled — Polynesian voyagers only arrived about 700 years before European explorers."},
+  {c:"Geography",s:"Geography",e:"🌍",t:"Iceland sits directly on the mid-Atlantic ridge where two tectonic plates are separating at about 2.5 cm per year."},
+  {c:"Geography",s:"Geography",e:"🌍",t:"Vatican City, at 0.44 km², is the world's smallest sovereign state — smaller than most city parks."},
+  {c:"Geography",s:"Geography",e:"🌍",t:"The Nile (6,650 km) and the Amazon (6,400 km) compete for the title of world's longest river — the debate depends on where each is considered to begin."},
+  {c:"Geography",s:"Geography",e:"🌍",t:"Papua New Guinea contains more than 800 distinct languages — nearly a third of all languages on Earth — in a country of only about 9 million people."},
+  {c:"Geography",s:"Geography",e:"🌍",t:"The Caspian Sea is the world's largest lake at 371,000 km² — larger than the entire country of Germany."},
+  {c:"Geography",s:"Geography",e:"🌍",t:"Cape Horn, at the southern tip of South America, is notorious for ferocious storms generated by the 'Roaring Forties' and 'Furious Fifties' wind belts."},
+  {c:"Geography",s:"Geography",e:"🌍",t:"The Amazon Basin rainforest produces about 20% of the world's oxygen through photosynthesis, earning it the nickname 'the lungs of the Earth'."},
+  // Mathematics
+  {c:"Mathematics",s:"Mathematics",e:"📐",t:"The number π is both irrational (its decimal expansion never ends or repeats) and transcendental (it cannot be the root of any polynomial with rational coefficients)."},
+  {c:"Mathematics",s:"Mathematics",e:"📐",t:"0.999… is exactly equal to 1. This is not an approximation — the two are different representations of the same number, provable with basic algebra."},
+  {c:"Mathematics",s:"Mathematics",e:"📐",t:"Fermat's Last Theorem — no integers satisfy xⁿ + yⁿ = zⁿ for n > 2 — was stated in 1637 and not proven until Andrew Wiles solved it in 1995, 358 years later."},
+  {c:"Mathematics",s:"Mathematics",e:"📐",t:"Some infinities are larger than others. Georg Cantor proved that the real numbers cannot be put in a one-to-one correspondence with the natural numbers — a larger infinity."},
+  {c:"Mathematics",s:"Mathematics",e:"📐",t:"In any group of 23 people, the probability that two of them share a birthday exceeds 50%. This counter-intuitive result is called the Birthday Paradox."},
+  {c:"Mathematics",s:"Mathematics",e:"📐",t:"Euler's identity, e^(iπ) + 1 = 0, links five fundamental mathematical constants in a single elegant equation — often called the most beautiful formula in mathematics."},
+  {c:"Mathematics",s:"Mathematics",e:"📐",t:"Fibonacci numbers appear throughout nature — in flower petal counts, pinecone spirals, and sunflower seeds — all connected to the golden ratio φ ≈ 1.618."},
+  {c:"Mathematics",s:"Mathematics",e:"📐",t:"The Seven Bridges of Königsberg problem, solved by Euler in 1736, founded graph theory. He proved it was impossible to cross every bridge exactly once."},
+  {c:"Mathematics",s:"Mathematics",e:"📐",t:"The Four Colour Theorem — any flat map can be coloured with just 4 colours so no adjacent regions share a colour — was proven in 1976 with computer assistance."},
+  {c:"Mathematics",s:"Mathematics",e:"📐",t:"A googol is 10¹⁰⁰. A googolplex is 10 to the power of a googol — so large it could not be written out even if every particle in the universe were a digit."},
+  {c:"Mathematics",s:"Mathematics",e:"📐",t:"There are infinitely many prime numbers — Euclid's proof is elegantly simple: assume a finite list, multiply them all and add 1, and you generate a contradiction."},
+  {c:"Mathematics",s:"Mathematics",e:"📐",t:"Benford's Law states that in many natural datasets the digit 1 appears as the leading digit about 30% of the time — and is used to detect financial fraud."},
+  {c:"Mathematics",s:"Mathematics",e:"📐",t:"The number e (≈ 2.71828) is the unique base for which the derivative of bˣ equals itself — making it indispensable in calculus and natural growth models."},
+  {c:"Mathematics",s:"Mathematics",e:"📐",t:"The Banach–Tarski paradox proves, mathematically, that a sphere can be decomposed into a finite number of pieces and reassembled into two identical spheres."},
+  {c:"Mathematics",s:"Mathematics",e:"📐",t:"Goldbach's Conjecture — every even integer greater than 2 is the sum of two primes — was stated in 1742 and remains unproven, one of maths' oldest open problems."},
+  {c:"Mathematics",s:"Mathematics",e:"📐",t:"A Klein bottle is a one-sided surface with no inside or outside — it can only exist without self-intersection in four-dimensional space."},
+  {c:"Mathematics",s:"Mathematics",e:"📐",t:"The Law of Large Numbers guarantees that as a sample grows, its average converges to the true population mean — the statistical backbone of all polling and testing."},
+  {c:"Mathematics",s:"Mathematics",e:"📐",t:"Kurt Gödel's incompleteness theorems (1931) showed that any consistent formal system powerful enough to describe arithmetic must contain true statements it cannot prove."},
+  {c:"Mathematics",s:"Mathematics",e:"📐",t:"The Monty Hall Problem: switching doors after one is revealed gives a 2/3 chance of winning. Most people intuitively (and incorrectly) assume it's 50/50."},
+  {c:"Mathematics",s:"Mathematics",e:"📐",t:"A fractal is a shape where any magnified portion looks statistically similar to the whole. The Mandelbrot set has infinite complexity generated by a remarkably simple equation."},
+  // Psychology
+  {c:"Psychology",s:"Psychology",e:"🧠",t:"The Dunning–Kruger effect: people with limited knowledge tend to overestimate their competence, while experts often underestimate how much they know."},
+  {c:"Psychology",s:"Psychology",e:"🧠",t:"Human memory is not a recording — every time you recall a memory you partially reconstruct it, and it can be subtly altered each time you do so."},
+  {c:"Psychology",s:"Psychology",e:"🧠",t:"Milgram's obedience experiments (1961) found that 65% of participants kept administering what they believed were painful electric shocks when ordered to do so by an authority figure."},
+  {c:"Psychology",s:"Psychology",e:"🧠",t:"The Mere Exposure Effect: people tend to prefer things they have encountered before, even without consciously remembering the exposure."},
+  {c:"Psychology",s:"Psychology",e:"🧠",t:"Sleep is critical for memory consolidation. During REM sleep the brain strengthens neural connections formed during the day; even one night of poor sleep can impair recall by up to 40%."},
+  {c:"Psychology",s:"Psychology",e:"🧠",t:"The Serial Position Effect: people recall the first and last items in a list better than those in the middle — called the primacy and recency effects."},
+  {c:"Psychology",s:"Psychology",e:"🧠",t:"Stanford Prison Experiment (1971): the simulation of prison life was halted after six days when participants so deeply adopted their roles — guards and prisoners — that it became dangerous."},
+  {c:"Psychology",s:"Psychology",e:"🧠",t:"Flow state, described by Mihaly Csikszentmihalyi, is a condition of deep focus and satisfaction that occurs when challenge perfectly matches skill level."},
+  {c:"Psychology",s:"Psychology",e:"🧠",t:"Bandura's Bobo doll experiments (1961) showed that children imitate aggressive behaviour they observe in adults — a founding study of social learning theory."},
+  {c:"Psychology",s:"Psychology",e:"🧠",t:"The Paradox of Choice (Barry Schwartz, 2004): having too many options actually reduces satisfaction with the choice made, because it increases regret and self-blame."},
+  {c:"Psychology",s:"Psychology",e:"🧠",t:"Newborns can recognise faces within hours of birth — they gaze at face-like patterns significantly longer than at other objects, particularly focusing on the eyes."},
+  {c:"Psychology",s:"Psychology",e:"🧠",t:"The Priming Effect: exposure to one stimulus influences the response to a later one. Seeing the word 'doctor' speeds up recognition of the word 'nurse'."},
+  {c:"Psychology",s:"Psychology",e:"🧠",t:"The Peak-End Rule: people judge an experience based on how it felt at its most intense moment and at its end — not on the average feeling throughout."},
+  {c:"Psychology",s:"Psychology",e:"🧠",t:"Confirmation Bias leads people to seek, favour, and remember information that confirms their existing beliefs, while discounting contradictory evidence."},
+  {c:"Psychology",s:"Psychology",e:"🧠",t:"The Yerkes–Dodson Law: both very low and very high arousal impair performance. Optimal performance occurs at an intermediate level of stress or excitement."},
+  {c:"Psychology",s:"Psychology",e:"🧠",t:"False memories can be entirely fabricated. Elizabeth Loftus's research showed it is possible to implant a vivid, detailed memory of an event that never happened."},
+  {c:"Psychology",s:"Psychology",e:"🧠",t:"The Bystander Effect: the more people who witness an emergency, the less likely any individual is to help — each person assumes someone else will act."},
+  {c:"Psychology",s:"Psychology",e:"🧠",t:"Ebbinghaus's Forgetting Curve (1885) showed that people forget about 50% of new information within an hour and 90% within a week without review."},
+  {c:"Psychology",s:"Psychology",e:"🧠",t:"Spaced Repetition is the most effective method for long-term memorisation: reviewing material at increasing intervals beats cramming every time."},
+  {c:"Psychology",s:"Psychology",e:"🧠",t:"The Framing Effect: how information is presented changes decisions. '95% survival rate' is perceived as far more reassuring than '5% mortality rate' — even though they are identical."},
+  // Technology
+  {c:"Technology",s:"Technology",e:"💻",t:"The Internet and the World Wide Web are not the same thing. The Internet is the physical network infrastructure; the Web is one of many services that runs on top of it."},
+  {c:"Technology",s:"Technology",e:"💻",t:"GPS relies on corrections from Einstein's relativity — without adjusting for time dilation from both speed and gravity, GPS would accumulate 10 km of error per day."},
+  {c:"Technology",s:"Technology",e:"💻",t:"The QR code was invented in 1994 by Japanese company Denso Wave — originally to track car parts on an assembly line, not for smartphones."},
+  {c:"Technology",s:"Technology",e:"💻",t:"Google's PageRank algorithm, developed in 1996 by Larry Page and Sergey Brin, ranks web pages by the quantity and quality of links pointing to them."},
+  {c:"Technology",s:"Technology",e:"💻",t:"CRISPR-Cas9 gene editing originated from a bacterial immune system. Bacteria store viral DNA to recognise and destroy future infections. Scientists borrowed the mechanism. It won the Nobel Prize in 2020."},
+  {c:"Technology",s:"Technology",e:"💻",t:"Lithium-ion batteries lose capacity with every charge cycle. After approximately 500 full cycles, a battery typically retains about 80% of its original capacity."},
+  {c:"Technology",s:"Technology",e:"💻",t:"A single fibre-optic cable can carry hundreds of separate light channels simultaneously, transmitting terabytes of data per second across oceans."},
+  {c:"Technology",s:"Technology",e:"💻",t:"TCP/IP, the protocol underlying the Internet, was designed in 1974 by Vint Cerf and Bob Kahn and remains the foundational communication standard today."},
+  {c:"Technology",s:"Technology",e:"💻",t:"JPEG compression (1992) works by discarding image detail that the human visual system is least sensitive to, using the Discrete Cosine Transform."},
+  {c:"Technology",s:"Technology",e:"💻",t:"A quantum computer's qubit can represent 0 and 1 simultaneously (superposition), allowing certain calculations that would take classical computers millions of years."},
+  {c:"Technology",s:"Technology",e:"💻",t:"Karl Benz patented the first true petrol-powered automobile in 1885 — the Benz Patent-Motorwagen — considered the birth of the modern car."},
+  {c:"Technology",s:"Technology",e:"💻",t:"The first integrated circuit was independently invented in 1958 by Jack Kilby (Texas Instruments) and Robert Noyce (who later co-founded Intel)."},
+  {c:"Technology",s:"Technology",e:"💻",t:"The USB standard was developed in 1994–96 by a consortium including Intel, IBM, and Microsoft to replace the confusing tangle of different connector types."},
+  {c:"Technology",s:"Technology",e:"💻",t:"The World Wide Web was proposed in 1989 by Tim Berners-Lee at CERN as a way to share information via hypertext links over the Internet."},
+  {c:"Technology",s:"Technology",e:"💻",t:"The first inkjet printer was released by HP in 1976. It worked by superheating ink until a tiny bubble burst, propelling a droplet onto the page."},
+  {c:"Technology",s:"Technology",e:"💻",t:"Blockchain was introduced in 2008 by the pseudonymous 'Satoshi Nakamoto' as the basis for Bitcoin — a distributed, tamper-resistant ledger of transactions."},
+  {c:"Technology",s:"Technology",e:"💻",t:"The first email was sent in 1971 by Ray Tomlinson, who also chose the @ symbol to separate the user name from the host machine name — a convention still in use."},
+  {c:"Technology",s:"Technology",e:"💻",t:"Nuclear batteries (betavoltaic cells) generate electricity from beta-particle radiation and can last decades — they already power some deep-space probes."},
+  {c:"Technology",s:"Technology",e:"💻",t:"Speech recognition accuracy surpassed human transcription accuracy in 2017 — a milestone achieved by Microsoft's system on a standard benchmark dataset."},
+  {c:"Technology",s:"Technology",e:"💻",t:"The first computer mouse was demonstrated in 1968 by Douglas Engelbart at 'The Mother of All Demos', which also introduced the GUI, hypertext, and video conferencing."},
+  // Economics
+  {c:"Economics",s:"Economics",e:"💰",t:"During Germany's 1923 hyperinflation, prices doubled every few days. People famously used wheelbarrows of banknotes to buy a single loaf of bread."},
+  {c:"Economics",s:"Economics",e:"💰",t:"The 1929 Wall Street Crash triggered the Great Depression, sending US unemployment to 25% and shrinking GDP by nearly a third."},
+  {c:"Economics",s:"Economics",e:"💰",t:"GDP does not measure inequality, wellbeing, leisure, or sustainability. A country ravaged by disaster can show GDP growth simply from rebuilding costs."},
+  {c:"Economics",s:"Economics",e:"💰",t:"The Phillips Curve suggested an inverse relationship between inflation and unemployment. Stagflation in the 1970s — high inflation and high unemployment simultaneously — broke the model."},
+  {c:"Economics",s:"Economics",e:"💰",t:"Gresham's Law: 'bad money drives out good'. When two currencies circulate, people hoard the more valuable one and spend the less valuable."},
+  {c:"Economics",s:"Economics",e:"💰",t:"The world's first central bank was Sweden's Riksbank, founded in 1668. The Bank of England (1694) is considered the model for modern central banking."},
+  {c:"Economics",s:"Economics",e:"💰",t:"Japan maintained near-zero interest rates almost continuously from 1995 — a unique and controversial monetary experiment in modern economic history."},
+  {c:"Economics",s:"Economics",e:"💰",t:"Adam Smith's 'invisible hand' metaphor (1776) describes how individuals pursuing self-interest can unintentionally promote the broader economic good."},
+  {c:"Economics",s:"Economics",e:"💰",t:"Bitcoin's supply is capped at 21 million coins by its protocol. As of 2025, about 19.7 million had already been mined."},
+  {c:"Economics",s:"Economics",e:"💰",t:"The Rebound Effect: improving energy efficiency can paradoxically increase overall consumption, because cheaper running costs encourage more use."},
+  {c:"Economics",s:"Economics",e:"💰",t:"Game theory, formalized by von Neumann and Morgenstern in 1944, studies strategic decision-making between rational agents with competing interests."},
+  {c:"Economics",s:"Economics",e:"💰",t:"The Prisoner's Dilemma shows that two rational individuals may not cooperate even when it would be in their collective best interest — a central insight of game theory."},
+  {c:"Economics",s:"Economics",e:"💰",t:"The IMF and World Bank were both created in 1944 at the Bretton Woods Conference to stabilise the global economy after the devastation of WWII."},
+  {c:"Economics",s:"Economics",e:"💰",t:"The Veblen effect describes goods whose demand rises as their price rises — luxury items that are desired specifically because they signal wealth."},
+  {c:"Economics",s:"Economics",e:"💰",t:"The US economy became the first to reach $1 trillion in GDP, around 1970. Today it exceeds $25 trillion."},
+  {c:"Economics",s:"Economics",e:"💰",t:"The George Principle argues that taxing land value (not buildings) is one of the least distortionary taxes, since the supply of land is fixed regardless of how it is taxed."},
+  {c:"Economics",s:"Economics",e:"💰",t:"The Rational Expectations Theory holds that people use all available information to forecast the future — meaning predictable economic policy loses effectiveness over time."},
+  {c:"Economics",s:"Economics",e:"💰",t:"Compound interest was called the 'eighth wonder of the world' (often attributed to Einstein, though the source is disputed): money growing at 7% annually doubles in about 10 years."},
+  {c:"Economics",s:"Economics",e:"💰",t:"The Laffer Curve illustrates that tax revenue is zero at both 0% and 100% tax rates — implying there is an optimal tax rate that maximises revenue."},
+  {c:"Economics",s:"Economics",e:"💰",t:"Microfinance, pioneered by Muhammad Yunus and the Grameen Bank in 1983, showed that small loans to the very poor could generate reliable repayment and economic uplift."},
+  // Language
+  {c:"Language",s:"Language",e:"🗣️",t:"Mandarin Chinese is spoken by the most native speakers of any language (~1.1 billion). English leads in non-native speakers, making it the world's most widely used second language."},
+  {c:"Language",s:"Language",e:"🗣️",t:"Around 7,000 languages are spoken in the world today. Just 23 of them are spoken by half of all people on Earth."},
+  {c:"Language",s:"Language",e:"🗣️",t:"Hebrew is the only written language to have been successfully revived as an everyday spoken tongue after centuries as a purely liturgical language."},
+  {c:"Language",s:"Language",e:"🗣️",t:"About 40% of Spanish vocabulary derives from Arabic — a direct legacy of 700 years of Moorish rule on the Iberian Peninsula (711–1492)."},
+  {c:"Language",s:"Language",e:"🗣️",t:"Icelandic has changed so little since the Middle Ages that modern speakers can read 13th-century Viking sagas with relatively little difficulty."},
+  {c:"Language",s:"Language",e:"🗣️",t:"Sign languages are not universal. Nearly every country — and sometimes region — has developed its own independent sign language with a distinct grammar."},
+  {c:"Language",s:"Language",e:"🗣️",t:"Japanese uses three scripts simultaneously: hiragana (syllabic), katakana (foreign words), and kanji (logographic). A typical newspaper uses all three."},
+  {c:"Language",s:"Language",e:"🗣️",t:"Finnish has 15 grammatical cases instead of prepositions. It has no grammatical gender and no articles — but it does have 15 ways of marking a noun's role."},
+  {c:"Language",s:"Language",e:"🗣️",t:"'Colorless green ideas sleep furiously' — Noam Chomsky's 1957 sentence — is grammatically flawless yet semantically nonsensical, illustrating that syntax and meaning are independent."},
+  {c:"Language",s:"Language",e:"🗣️",t:"The word 'robot' comes from Czech — Karel Čapek's 1920 play R.U.R. used 'robota', meaning forced labour or drudgery."},
+  {c:"Language",s:"Language",e:"🗣️",t:"Basque, spoken in the Pyrenees region, is a language isolate — it has no known genetic relationship to any other language on Earth."},
+  {c:"Language",s:"Language",e:"🗣️",t:"The Phoenician alphabet (~1050 BC) was among the first to assign one symbol to one sound — all Western alphabets descend from it."},
+  {c:"Language",s:"Language",e:"🗣️",t:"The Pirahã language of an Amazonian tribe has no numbers, no past/future tense, and no recursive grammar — challenging Chomsky's universal grammar theory."},
+  {c:"Language",s:"Language",e:"🗣️",t:"English borrowed more words from French than from any other language, following the Norman Conquest of 1066 — which added an entire layer of new vocabulary."},
+  {c:"Language",s:"Language",e:"🗣️",t:"The word 'quark' (the subatomic particle) was coined by physicist Murray Gell-Mann in 1964, taken from the phrase 'Three quarks for Muster Mark' in James Joyce's Finnegans Wake."},
+  {c:"Language",s:"Language",e:"🗣️",t:"American Sign Language (ASL) is an entirely independent language, not a manual version of English. Its grammar is closer to Japanese than to English."},
+  {c:"Language",s:"Language",e:"🗣️",t:"The Latin alphabet has 26 letters in English, but the original Latin alphabet had only 21. Letters J, U, and W were added in medieval and early modern times."},
+  {c:"Language",s:"Language",e:"🗣️",t:"Some languages have no word for 'no' — instead they express negation by modifying the verb. Mandarin uses separate negative words 不 (bù) and 没 (méi) depending on context."},
+  {c:"Language",s:"Language",e:"🗣️",t:"Esperanto, designed in 1887 by Ludwig Lazarus Zamenhof, was created as an easy international auxiliary language. It has an estimated 2 million speakers today."},
+  {c:"Language",s:"Language",e:"🗣️",t:"The Indo-European language family — which includes English, Spanish, Hindi, Russian, and Persian — is thought to descend from a common ancestor spoken 5,000–6,000 years ago."},
+  // Music
+  {c:"Music",s:"Music",e:"🎵",t:"The note A4 was standardised at 440 Hz internationally in 1939. Before that, tuning varied from about 415 to 466 Hz across different regions and eras."},
+  {c:"Music",s:"Music",e:"🎵",t:"Mozart composed his first symphony at age 8 — though scholars believe his father Leopold likely assisted with the editing and notation."},
+  {c:"Music",s:"Music",e:"🎵",t:"John Cage's 4'33\" (1952) instructs the performer to play nothing for four minutes and thirty-three seconds. The ambient sounds of the audience become the music."},
+  {c:"Music",s:"Music",e:"🎵",t:"Beethoven wrote his 9th Symphony — including the famous 'Ode to Joy' — after he had gone completely deaf. He reportedly tried to conduct the premiere himself."},
+  {c:"Music",s:"Music",e:"🎵",t:"A piano has over 12,000 individual parts. The treble strings are struck by three hammers, while the lowest bass strings use just one — each contributing to the piano's tonal range."},
+  {c:"Music",s:"Music",e:"🎵",t:"A violin is assembled from 70 separate pieces. The spruce top and maple back are chosen for different acoustic properties that together shape the instrument's voice."},
+  {c:"Music",s:"Music",e:"🎵",t:"Bach's Well-Tempered Clavier (1722) demonstrated that music could be played in all 24 major and minor keys — previously impossible with earlier tuning systems."},
+  {c:"Music",s:"Music",e:"🎵",t:"The modern drum kit was developed in New Orleans in the 1920s so that a single musician could play what had previously required several percussionists."},
+  {c:"Music",s:"Music",e:"🎵",t:"The Minimoog synthesiser (1970) by Robert Moog was the first mass-market synthesiser — it made synthesis accessible to solo musicians for the first time."},
+  {c:"Music",s:"Music",e:"🎵",t:"The brain processes music and language in overlapping regions. This is why music therapy is used to assist speech recovery after strokes."},
+  {c:"Music",s:"Music",e:"🎵",t:"J. S. Bach fathered 20 children — 7 with his first wife and 13 with his second. At least four of them became notable composers in their own right."},
+  {c:"Music",s:"Music",e:"🎵",t:"Schubert's 'Unfinished Symphony' (B minor, D.759) was written in 1822 and consists of only two movements. Why he never completed it remains unknown."},
+  {c:"Music",s:"Music",e:"🎵",t:"Jazz developed in New Orleans in the 1890s, blending African rhythmic traditions with European harmonic structures — one of the most globally influential genres ever created."},
+  {c:"Music",s:"Music",e:"🎵",t:"The tritone interval was called 'Diabolus in Musica' ('Devil in Music') in the Middle Ages and was deliberately avoided in church compositions for centuries."},
+  {c:"Music",s:"Music",e:"🎵",t:"Pop music tends to cluster around 120 BPM — close to the resting human heart rate — which may partly explain why that tempo feels instinctively natural."},
+  {c:"Music",s:"Music",e:"🎵",t:"Stradivarius violins, made in 17th-18th century Cremona by Antonio Stradivari, are still considered unsurpassed. The secret of their exceptional tone remains debated."},
+  {c:"Music",s:"Music",e:"🎵",t:"The electric guitar was invented in 1931 by George Beauchamp and Adolph Rickenbacker — originally to amplify Hawaiian lap steel guitar over loud big-band orchestras."},
+  {c:"Music",s:"Music",e:"🎵",t:"Hildegard of Bingen (1098–1179) is the earliest composer whose biography is well-documented. She was a German abbess who composed over 70 liturgical songs."},
+  {c:"Music",s:"Music",e:"🎵",t:"The theremin (1920) is one of the only instruments played without physical contact — the player moves their hands near two antennas to control pitch and volume."},
+  {c:"Music",s:"Music",e:"🎵",t:"Concert A (440 Hz) produces a sound wave with a wavelength of about 78 cm in air. Higher notes have shorter wavelengths; lower notes have longer ones."},
+  // Sports
+  {c:"Sports",s:"Sports",e:"⚽",t:"The marathon distance of 42.195 km was set at the 1908 London Olympics so the race would start beneath the nursery window at Windsor Castle and finish in front of the royal box."},
+  {c:"Sports",s:"Sports",e:"⚽",t:"Football (soccer) is the world's most popular sport — roughly 4 billion people follow it in some form."},
+  {c:"Sports",s:"Sports",e:"⚽",t:"Michael Phelps won 23 Olympic gold medals — more than most countries have won across their entire Olympic history."},
+  {c:"Sports",s:"Sports",e:"⚽",t:"A table-tennis ball can travel at over 112 km/h after a hard smash. Given the ball's 40 mm diameter, this makes it one of the fastest sports relative to equipment size."},
+  {c:"Sports",s:"Sports",e:"⚽",t:"The first modern Olympics took place in Athens in 1896, featuring 14 nations and 241 athletes — all of whom were male."},
+  {c:"Sports",s:"Sports",e:"⚽",t:"A golf 'hole in one' has a probability of roughly 1 in 12,500 for an amateur — and about 1 in 2,500 for a professional golfer."},
+  {c:"Sports",s:"Sports",e:"⚽",t:"Wimbledon, founded in 1877, is the oldest Grand Slam tennis tournament. It is also the only one that still requires players to wear predominantly white on court."},
+  {c:"Sports",s:"Sports",e:"⚽",t:"The Tour de France covers roughly 3,500 km over 21 stages. Riders burn around 8,000 calories per day — about four times the intake of an average adult."},
+  {c:"Sports",s:"Sports",e:"⚽",t:"In the board game Go, the number of possible board positions (2×10¹⁷⁰) exceeds the number of atoms in the observable universe."},
+  {c:"Sports",s:"Sports",e:"⚽",t:"Judo — meaning 'the gentle way' — was created by Jigoro Kano in Japan in 1882. It became the first martial art admitted to the Olympics, at the 1964 Tokyo Games."},
+  {c:"Sports",s:"Sports",e:"⚽",t:"Usain Bolt set the 100 m world record at the 2009 Berlin World Championships: 9.58 seconds, averaging 37.58 km/h over the full distance."},
+  {c:"Sports",s:"Sports",e:"⚽",t:"A standard FIFA football pitch is 105 × 68 metres. The 90-minute match duration became a convention in 1860s England through informal agreement, not a rule."},
+  {c:"Sports",s:"Sports",e:"⚽",t:"The marathon legend says a Greek soldier named Pheidippides ran from Marathon to Athens in 490 BC to announce a military victory — then died. Modern historians debate the details."},
+  {c:"Sports",s:"Sports",e:"⚽",t:"Swimming is one of the most complete full-body workouts: up to 50 major muscle groups are engaged during a single freestyle swimming stroke cycle."},
+  {c:"Sports",s:"Sports",e:"⚽",t:"The baseball has maintained essentially the same standard size (229–235 mm circumference) since 1872 — one of sport's most stable technical specifications."},
+  {c:"Sports",s:"Sports",e:"⚽",t:"The first recorded chess match using modern rules was played in Göttingen, Germany, around 1490. Chess itself is at least 1,500 years old, originating in India."},
+  {c:"Sports",s:"Sports",e:"⚽",t:"Cricket's Ashes series between England and Australia began in 1882, when a mock obituary declared that English cricket had died and 'the body will be cremated and the ashes taken to Australia'."},
+  {c:"Sports",s:"Sports",e:"⚽",t:"The world record for the heaviest deadlift is over 500 kg — more than the weight of a grand piano."},
+  {c:"Sports",s:"Sports",e:"⚽",t:"Fencing is one of only five sports to have featured at every modern Summer Olympics since 1896."},
+  {c:"Sports",s:"Sports",e:"⚽",t:"Free climbing El Capitan's 'Dawn Wall' in Yosemite was achieved in 2015 by Tommy Caldwell and Kevin Jorgeson — a 914 m route considered the hardest big-wall free climb ever completed."},
+  // Food
+  {c:"Food",s:"Food",e:"🍎",t:"The tomato is botanically a fruit — it develops from a flower and contains seeds. The US Supreme Court ruled it a vegetable in 1893 purely for tariff purposes."},
+  {c:"Food",s:"Food",e:"🍎",t:"Honey does not spoil. Archaeologists found 3,000-year-old honey in Egyptian tombs that was still perfectly edible — its low moisture and acidity prevent bacterial growth."},
+  {c:"Food",s:"Food",e:"🍎",t:"Pineapples contain bromelain, a protein-digesting enzyme. This is why eating fresh pineapple can cause a slight tingling as it gently breaks down the surface of your mouth."},
+  {c:"Food",s:"Food",e:"🍎",t:"Coffee is the second most traded commodity in the world after oil. About 2.5 billion cups are consumed globally every single day."},
+  {c:"Food",s:"Food",e:"🍎",t:"Chilli heat is measured in Scoville Heat Units: a bell pepper scores 0, jalapeños 2,500–8,000, and the Carolina Reaper — the world's hottest — over 2.2 million."},
+  {c:"Food",s:"Food",e:"🍎",t:"Apples float on water because they are about 25% air. This cellular air pocket also contributes to their crisp texture when you bite into them."},
+  {c:"Food",s:"Food",e:"🍎",t:"Dark chocolate (above 70% cacao) is rich in flavonoids — antioxidants linked in multiple studies to modest reductions in blood pressure."},
+  {c:"Food",s:"Food",e:"🍎",t:"Eggs contain all nine essential amino acids in proportions close to what the human body needs, making them one of the most nutritionally complete single foods."},
+  {c:"Food",s:"Food",e:"🍎",t:"Sushi did not originate in Japan — it evolved from a Southeast Asian fish-preservation technique using fermented rice. The Japanese fresh-fish version emerged in the 19th century."},
+  {c:"Food",s:"Food",e:"🍎",t:"The story that Marco Polo brought pasta to Italy from China is a myth. Arab texts from 12th-century Sicily already describe dried pasta being made and traded."},
+  {c:"Food",s:"Food",e:"🍎",t:"About 80% of all commercial vanilla flavouring is synthetic vanillin, manufactured from petrochemical derivatives — real vanilla extract comes from orchid seed pods."},
+  {c:"Food",s:"Food",e:"🍎",t:"The banana plant is technically an herbaceous plant, not a tree. The banana is the world's tallest non-woody plant and can grow over 9 metres tall."},
+  {c:"Food",s:"Food",e:"🍎",t:"Tea is the second most consumed beverage in the world after water — about 3 billion cups are drunk every day across all its varieties."},
+  {c:"Food",s:"Food",e:"🍎",t:"Cauliflower, broccoli, Brussels sprouts, kale, cabbage, and kohlrabi are all the same species — Brassica oleracea — selectively bred to emphasise different parts of the plant."},
+  {c:"Food",s:"Food",e:"🍎",t:"The avocado is an 'evolutionary anachronism': its fruit evolved to be eaten and dispersed by large Pleistocene megafauna that went extinct about 13,000 years ago."},
+  {c:"Food",s:"Food",e:"🍎",t:"Wasabi served in most sushi restaurants outside Japan is not real wasabi — it is typically dyed horseradish mixed with mustard. Real wasabi (Wasabia japonica) is extremely difficult to grow."},
+  {c:"Food",s:"Food",e:"🍎",t:"Capsaicin, the compound that makes chillies hot, binds to TRPV1 pain receptors — the same receptors that respond to actual heat above 43 °C. Your mouth is not physically burning."},
+  {c:"Food",s:"Food",e:"🍎",t:"Bread leavened with yeast dates back at least 5,000 years — wild yeast residue has been found in ancient Egyptian grinding stones."},
+  {c:"Food",s:"Food",e:"🍎",t:"The Maillard reaction — the browning that occurs when bread toasts or steak sears — is not caramelisation. It is a complex series of chemical reactions between amino acids and sugars that creates hundreds of new flavour compounds."},
+  {c:"Food",s:"Food",e:"🍎",t:"Chocolate was originally consumed as a bitter, frothy drink by Mesoamerican civilisations for over 3,000 years before Europeans added sugar to make it sweet in the 1500s."},
+  // Philosophy
+  {c:"Philosophy",s:"Philosophy",e:"🤔",t:"Descartes' 'Cogito ergo sum' (1637) — 'I think, therefore I am' — is the one statement that cannot be doubted: the very act of doubting proves that a thinker exists."},
+  {c:"Philosophy",s:"Philosophy",e:"🤔",t:"The Ship of Theseus: if a ship's every plank is gradually replaced, is it still the same ship? The puzzle remains central to debates about identity and persistence."},
+  {c:"Philosophy",s:"Philosophy",e:"🤔",t:"Kant argued the mind does not passively receive reality — it actively structures it. Time, space, and causality are frameworks the brain imposes on experience, not features of the world."},
+  {c:"Philosophy",s:"Philosophy",e:"🤔",t:"John Stuart Mill's Harm Principle (1859): the state may only restrict individual freedom to prevent harm to others — not to protect individuals from their own choices."},
+  {c:"Philosophy",s:"Philosophy",e:"🤔",t:"Occam's Razor is a methodological guideline: when two explanations are equal in other respects, prefer the simpler one. It is a heuristic, not a law of nature."},
+  {c:"Philosophy",s:"Philosophy",e:"🤔",t:"The Sorites Paradox: how many grains of sand make a heap? Removing one grain never turns a heap into a non-heap — so where is the boundary? The puzzle challenges the logic of vague predicates."},
+  {c:"Philosophy",s:"Philosophy",e:"🤔",t:"Nietzsche wrote: 'What does not kill me makes me stronger' — from Twilight of the Idols (1888). The phrase has since permeated popular culture worldwide."},
+  {c:"Philosophy",s:"Philosophy",e:"🤔",t:"The Bystander at the Switch (trolley problem): is it morally permissible to divert a runaway trolley to kill one person in order to save five? The dilemma has no universally accepted answer."},
+  {c:"Philosophy",s:"Philosophy",e:"🤔",t:"Plato's Allegory of the Cave argues that ordinary people mistake shadows for reality — only the philosopher, turning towards the light, can perceive the true Forms."},
+  {c:"Philosophy",s:"Philosophy",e:"🤔",t:"Hard determinism holds that every event — including every human choice — is causally necessitated by prior events. This appears to leave no room for free will."},
+  {c:"Philosophy",s:"Philosophy",e:"🤔",t:"Nick Bostrom's Simulation Argument (2003): at least one of three things is true — advanced civilisations go extinct before simulating minds, they choose not to, or we are almost certainly in a simulation."},
+  {c:"Philosophy",s:"Philosophy",e:"🤔",t:"Rawls's Veil of Ignorance (1971): to design a fair society, imagine you do not know which position in it you will occupy — which principles would you then choose?"},
+  {c:"Philosophy",s:"Philosophy",e:"🤔",t:"Stoicism, founded in Athens around 301 BC, teaches that we should focus only on what is within our control and accept everything else with equanimity."},
+  {c:"Philosophy",s:"Philosophy",e:"🤔",t:"John Searle's Chinese Room thought experiment (1980) argues that a computer could pass a language test without understanding anything — challenging claims about artificial intelligence."},
+  {c:"Philosophy",s:"Philosophy",e:"🤔",t:"Aristotle defined humans as 'political animals' — by nature, we require a community (polis) to flourish. A person outside society is either a beast or a god."},
+  {c:"Philosophy",s:"Philosophy",e:"🤔",t:"Hume's Problem of Induction: no finite number of observations can logically prove a universal law. We cannot be certain the sun will rise tomorrow — we merely expect it to."},
+  {c:"Philosophy",s:"Philosophy",e:"🤔",t:"The Trolley Problem, introduced by Philippa Foot in 1967, exposed a sharp conflict between consequentialist ethics (save more lives) and deontological ethics (do not use someone as a means)."},
+  {c:"Philosophy",s:"Philosophy",e:"🤔",t:"Utilitarianism, advanced by Bentham and Mill, holds that the morally right action is the one that produces the greatest happiness for the greatest number."},
+  {c:"Philosophy",s:"Philosophy",e:"🤔",t:"The Liar Paradox — 'This sentence is false' — is self-referentially contradictory: if true, it is false; if false, it is true. It reveals the limits of formal logical systems."},
+  {c:"Philosophy",s:"Philosophy",e:"🤔",t:"The Absurd, as described by Camus, is the conflict between humanity's deep need for meaning and the universe's silent indifference. The response is not suicide or faith, but revolt."},
+  // Biology
+  {c:"Biology",s:"Biology",e:"🧬",t:"Every living organism — from bacteria to blue whales — uses the same four DNA bases: adenine, thymine, guanine, and cytosine."},
+  {c:"Biology",s:"Biology",e:"🧬",t:"Mitochondria have their own DNA, evidence that they were once free-living bacteria that were engulfed by larger cells about 1.5 billion years ago."},
+  {c:"Biology",s:"Biology",e:"🧬",t:"DNA polymerase replicates DNA with an error rate of less than one mistake per billion bases — a precision rate that no human-made copying process approaches."},
+  {c:"Biology",s:"Biology",e:"🧬",t:"Viruses are generally considered non-living: they have no metabolism, cannot reproduce independently, and must hijack a host cell to replicate."},
+  {c:"Biology",s:"Biology",e:"🧬",t:"CRISPR-Cas9, the gene-editing tool, originates from the bacterial immune system — bacteria store snippets of viral DNA to identify and destroy future infections."},
+  {c:"Biology",s:"Biology",e:"🧬",t:"Any two humans share 99.9% of their DNA. The 0.1% difference accounts for all visible and most invisible variation between people."},
+  {c:"Biology",s:"Biology",e:"🧬",t:"Humans share about 60% of their DNA with a banana — a striking illustration that fundamental cellular machinery has been conserved across billions of years of evolution."},
+  {c:"Biology",s:"Biology",e:"🧬",t:"All life on Earth belongs to one of three domains: Bacteria, Archaea, and Eukaryota — all descending from a common ancestor, LUCA, about 3.5 billion years ago."},
+  {c:"Biology",s:"Biology",e:"🧬",t:"Antibiotics kill bacteria but are entirely ineffective against viruses. Using them for viral infections is medically useless and accelerates antibiotic resistance."},
+  {c:"Biology",s:"Biology",e:"🧬",t:"Epigenetics studies heritable changes in gene expression that do not involve changes to the DNA sequence itself — environmental factors can alter gene activity for generations."},
+  {c:"Biology",s:"Biology",e:"🧬",t:"The immune system has two branches: innate (fast, non-specific) and adaptive (slow but targeted, with long-term memory). Vaccines work by training the adaptive branch."},
+  {c:"Biology",s:"Biology",e:"🧬",t:"The giant isopod (Bathynomus giganteus) can grow to 45 cm and survive over five years without food — a remarkable adaptation to the deep-sea environment."},
+  {c:"Biology",s:"Biology",e:"🧬",t:"The bumblebee's flight was once claimed to violate aerodynamics — in fact, earlier models were simply too simplistic. Bees generate lift via complex wing-tip vortices."},
+  {c:"Biology",s:"Biology",e:"🧬",t:"FOXP2 — the 'language gene' — is uniquely mutated in humans compared to other primates and is linked to the development of complex speech and language."},
+  {c:"Biology",s:"Biology",e:"🧬",t:"The horseshoe crab's blue blood contains a compound called Limulus Amoebocyte Lysate (LAL), used since the 1970s to test every injectable medicine for bacterial contamination."},
+  {c:"Biology",s:"Biology",e:"🧬",t:"Embryonic stem cells can differentiate into any cell type in the body. Adult stem cells are more limited but remain ethically less controversial to obtain."},
+  {c:"Biology",s:"Biology",e:"🧬",t:"The mantis shrimp has 16 types of photoreceptors compared to our 3 — yet research suggests its brain may process colour less discriminately than ours does."},
+  {c:"Biology",s:"Biology",e:"🧬",t:"Octopuses and clams are both molluscs — the same phylum — despite looking almost nothing alike. The mollusc phylum is one of the most morphologically diverse in the animal kingdom."},
+  {c:"Biology",s:"Biology",e:"🧬",t:"The periodical cicada (Brood X) spends 17 years underground as a nymph before emerging for a few weeks as an adult, mating, and dying."},
+  {c:"Biology",s:"Biology",e:"🧬",t:"Gut bacteria outnumber human cells roughly one-to-one in a healthy adult and produce neurotransmitters, vitamins, and compounds that influence mood and immunity."},
+  // Physics
+  {c:"Physics",s:"Physics",e:"⚛️",t:"Special relativity (Einstein, 1905): the faster an object moves, the slower its time passes relative to a stationary observer — a phenomenon called time dilation."},
+  {c:"Physics",s:"Physics",e:"⚛️",t:"Heisenberg's Uncertainty Principle: it is fundamentally impossible to know both the exact position and exact momentum of a particle simultaneously — this is not a limitation of instruments but of nature."},
+  {c:"Physics",s:"Physics",e:"⚛️",t:"Schrödinger's Cat is a thought experiment illustrating how Copenhagen quantum mechanics implies a cat in a sealed box is simultaneously alive and dead until observed."},
+  {c:"Physics",s:"Physics",e:"⚛️",t:"Superconductivity occurs when certain materials lose all electrical resistance below a critical temperature — discovered in 1911 by Heike Kamerlingh Onnes."},
+  {c:"Physics",s:"Physics",e:"⚛️",t:"The highest temperature ever achieved in a laboratory was about 5.5 trillion °C, created at CERN during heavy-ion collisions — briefly hotter than the centre of a supernova."},
+  {c:"Physics",s:"Physics",e:"⚛️",t:"The photoelectric effect, explained by Einstein in 1905, proved that light behaves as particles (photons), not just waves — a foundation of quantum mechanics. It won him the Nobel Prize."},
+  {c:"Physics",s:"Physics",e:"⚛️",t:"A black hole's event horizon is the point of no return — beyond it, even light cannot escape. The boundary itself is not a physical surface but a critical radius of spacetime."},
+  {c:"Physics",s:"Physics",e:"⚛️",t:"Gravity is by far the weakest of the four fundamental forces — about 10³⁶ times weaker than electromagnetism — yet it dominates at cosmic scales because it has infinite range and always attracts."},
+  {c:"Physics",s:"Physics",e:"⚛️",t:"Sound cannot travel through a vacuum. The famous tagline for the film Alien — 'In space, no one can hear you scream' — is physically accurate."},
+  {c:"Physics",s:"Physics",e:"🔬",t:"The Doppler Effect explains why a siren sounds higher in pitch as it approaches and lower as it recedes. The same principle applied to light allows astronomers to measure star velocities."},
+  {c:"Physics",s:"Physics",e:"⚛️",t:"The Higgs boson — the 'God particle' — was confirmed at CERN in 2012. Its associated field gives mass to fundamental particles like quarks and electrons."},
+  {c:"Physics",s:"Physics",e:"⚛️",t:"The positron — the antiparticle of the electron — was the first antimatter particle discovered, detected by Carl Anderson in 1932 in cosmic ray tracks."},
+  {c:"Physics",s:"Physics",e:"⚛️",t:"Water pressure increases by roughly 1 atmosphere for every 10 m of depth. At the bottom of the Mariana Trench the pressure exceeds 1,000 atmospheres."},
+  {c:"Physics",s:"Physics",e:"⚛️",t:"The conservation of angular momentum explains why a spinning figure skater speeds up when pulling in their arms — and why neutron stars rotate so fast."},
+  {c:"Physics",s:"Physics",e:"⚛️",t:"Leidenfrost effect: a droplet of liquid on a surface far hotter than its boiling point levitates on a thin vapour layer and glides almost frictionlessly."},
+  {c:"Physics",s:"Physics",e:"⚛️",t:"Hawking radiation is the theoretical prediction that black holes slowly emit thermal radiation and eventually evaporate — proposed by Stephen Hawking in 1974."},
+  {c:"Physics",s:"Physics",e:"⚛️",t:"The Pauli Exclusion Principle states that no two identical fermions (like electrons) can occupy the same quantum state simultaneously — it is why matter takes up space."},
+  {c:"Physics",s:"Physics",e:"⚛️",t:"Cherenkov radiation is the blue glow seen in nuclear reactors — produced when a charged particle moves through a medium faster than light travels through that medium."},
+  {c:"Physics",s:"Physics",e:"⚛️",t:"Weber's Law in psychophysics (and its extension by Fechner): the just-noticeable difference in a stimulus is proportional to its magnitude — sound must double to seem twice as loud."},
+  {c:"Physics",s:"Physics",e:"⚛️",t:"The standard model of particle physics describes 17 fundamental particles and three of the four forces — everything except gravity — with extraordinary precision."},
+  // Chemistry
+  {c:"Chemistry",s:"Chemistry",e:"🧪",t:"Mendeleev's periodic table (1869) arranged elements by atomic mass and predicted the existence and properties of several elements not yet discovered at the time."},
+  {c:"Chemistry",s:"Chemistry",e:"🧪",t:"Water is called the 'universal solvent' because its polarity allows it to dissolve more substances than any other liquid — crucial for all known forms of life."},
+  {c:"Chemistry",s:"Chemistry",e:"🧪",t:"Helium was discovered in the Sun before it was found on Earth — spectroscopists identified an unknown spectral line in sunlight in 1868, naming it after Helios, the sun god."},
+  {c:"Chemistry",s:"Chemistry",e:"🧪",t:"Carbon-14 decays at a constant rate with a half-life of 5,730 years, making radiocarbon dating reliable for organic material up to about 50,000 years old."},
+  {c:"Chemistry",s:"Chemistry",e:"🧪",t:"Ozone (O₃) in the stratosphere is formed when UV radiation splits O₂ molecules. The resulting oxygen atoms bond with other O₂ molecules and shield Earth from harmful UV."},
+  {c:"Chemistry",s:"Chemistry",e:"🧪",t:"Sulfuric acid (H₂SO₄) is the world's most produced chemical by volume — used in fertilisers, batteries, mineral processing, and dozens of industrial processes."},
+  {c:"Chemistry",s:"Chemistry",e:"🧪",t:"Diamond is the hardest natural substance, but graphite — made of the same carbon atoms — is the thermodynamically stable form at room temperature. Diamond is metastable."},
+  {c:"Chemistry",s:"Chemistry",e:"🧪",t:"Nitrogen makes up 78% of the atmosphere, but most organisms cannot use atmospheric N₂ directly. Nitrogen-fixing bacteria convert it into forms usable by plants and animals."},
+  {c:"Chemistry",s:"Chemistry",e:"🧪",t:"Exothermic reactions release heat (combustion); endothermic reactions absorb it (ice melting). The distinction underpins everything from hand warmers to cold packs."},
+  {c:"Chemistry",s:"Chemistry",e:"🧪",t:"Fluorine is the most electronegative element — it attracts electrons more strongly than anything else and reacts with nearly every element, including the noble gas xenon."},
+  {c:"Chemistry",s:"Chemistry",e:"🧪",t:"Oxidation is the loss of electrons; reduction is the gain of electrons. They always occur together in a redox reaction — you cannot have one without the other."},
+  {c:"Chemistry",s:"Chemistry",e:"🧪",t:"Buckminsterfullerene (C₆₀), discovered in 1985, is a cage of 60 carbon atoms shaped exactly like a football. The discoverers won the Nobel Prize in Chemistry in 1996."},
+  {c:"Chemistry",s:"Chemistry",e:"🧪",t:"Esters are the compounds that give fruits their characteristic smells — isoamyl acetate smells like banana, ethyl butyrate like pineapple. They form from reactions between acids and alcohols."},
+  {c:"Chemistry",s:"Chemistry",e:"🧪",t:"Sodium and potassium are soft metals that react violently — and can even ignite — when they come into contact with water."},
+  {c:"Chemistry",s:"Chemistry",e:"🧪",t:"The pH scale is logarithmic: each unit represents a tenfold change in hydrogen ion concentration. pH 3 is ten times more acidic than pH 4, and a hundred times more than pH 5."},
+  {c:"Chemistry",s:"Chemistry",e:"🧪",t:"Liquid nitrogen boils at −196 °C. When spilled on a warm surface it skims frictionlessly on a vapour cushion — the same Leidenfrost effect seen with water on a very hot pan."},
+  {c:"Chemistry",s:"Chemistry",e:"🧪",t:"The Haber process, developed in 1909, synthesises ammonia from atmospheric nitrogen and hydrogen. It now produces fertiliser that feeds roughly half the global population."},
+  {c:"Chemistry",s:"Chemistry",e:"🧪",t:"Catalysts speed up chemical reactions without being consumed. Enzymes are biological catalysts — some accelerate reactions by factors of up to 10¹⁷."},
+  {c:"Chemistry",s:"Chemistry",e:"🧪",t:"Noble gases (Group 18) are chemically inert because their outer electron shells are completely filled — they have almost no tendency to form chemical bonds under normal conditions."},
+  {c:"Chemistry",s:"Chemistry",e:"🧪",t:"The Maillard reaction — responsible for the browning of bread, coffee, and seared meat — creates hundreds of new flavour molecules from amino acids and sugars. It is distinct from caramelisation."},
+];
+
+// ════════════════════════════
+//  LOGIC
+// ════════════════════════════
+
+// Get day-index from date (deterministic: same date → same index)
+// Uses a shuffled-by-category order so consecutive days cycle through different topics
+const CATEGORY_ORDER = [
+  "Science","History","Nature","Human Body","Space","Geography","Mathematics",
+  "Psychology","Technology","Economics","Language","Music","Sports","Food",
+  "Philosophy","Biology","Physics","Chemistry"
+];
+
+// Build interleaved order: spread facts so category rotates each day
+function buildDayOrder() {
+  const bycat = {};
+  FACTS.forEach((f,i) => {
+    if (!bycat[f.c]) bycat[f.c] = [];
+    bycat[f.c].push(i);
+  });
+  const ordered = [];
+  const cats = CATEGORY_ORDER.filter(c => bycat[c]);
+  let buckets = cats.map(c => [...bycat[c]]);
+  while (ordered.length < FACTS.length) {
+    for (let b = 0; b < buckets.length && ordered.length < FACTS.length; b++) {
+      if (buckets[b].length > 0) ordered.push(buckets[b].shift());
+    }
+  }
+  return ordered;
+}
+
+const DAY_ORDER = buildDayOrder(); // indices into FACTS[], one per day of year
+
+function getDayIndex() {
+  // Day of year (1–365)
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 1);
+  const dayOfYear = Math.ceil((now - start) / 86400000);
+  return ((dayOfYear - 1) % DAY_ORDER.length);
+}
+
+let viewingSlot = getDayIndex(); // the "slot" we're currently viewing
+
+function getFactForSlot(slot) {
+  return FACTS[DAY_ORDER[((slot % DAY_ORDER.length) + DAY_ORDER.length) % DAY_ORDER.length]];
+}
+
+// ── STATE ──
+function loadState() {
+  try { return JSON.parse(localStorage.getItem('cd_v2') || '{}'); }
+  catch(e) { return {}; }
+}
+function saveState(s) { localStorage.setItem('cd_v2', JSON.stringify(s)); }
+
+function updateStreak() {
+  const s = loadState();
+  const today = new Date().toDateString();
+  if (s.lastVisit === today) return;
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  s.streak = (s.lastVisit === yesterday) ? (s.streak || 0) + 1 : 1;
+  s.lastVisit = today;
+  s.seen = (s.seen || 0) + 1;
+  saveState(s);
+}
+
+// ── RENDER HOME ──
+function renderHome(slot) {
+  if (slot === undefined) slot = getDayIndex();
+  viewingSlot = slot;
+  const f = getFactForSlot(slot);
+
+  // Apply category theme
+  const themeClass = 'cat-' + f.s;
+  document.getElementById('home').className = 'view active ' + themeClass;
+
+  // Date chip
+  const d = new Date();
+  const offset = slot - getDayIndex();
+  const target = new Date(d.getTime() + offset * 86400000);
+  document.getElementById('dateChip').textContent =
+    target.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
+
+  // Streak
+  const st = loadState();
+  document.getElementById('streakDisplay').textContent = st.streak || 0;
+  document.getElementById('streakNum').textContent = st.streak || 0;
+  document.getElementById('seenNum').textContent = st.seen || 0;
+
+  // Category badge
+  document.getElementById('catEmoji').textContent = f.e;
+  document.getElementById('catName').textContent = f.c;
+  document.getElementById('catBadge').className = 'cat-badge';
+
+  // Fact
+  document.getElementById('factText').textContent = f.t;
+  document.getElementById('factMeta').textContent = f.c;
+
+  // Dots
+  const dotsEl = document.getElementById('navDots');
+  dotsEl.innerHTML = '';
+  [-2,-1,0,1,2].forEach(d => {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (d === 0 ? ' active' : '');
+    dot.onclick = () => renderHome(slot + d);
+    dotsEl.appendChild(dot);
+  });
+
+  // Reminder
+  updateReminderDisplay();
+}
+
+function prevFact() { renderHome(viewingSlot - 1); }
+function nextFact() { renderHome(viewingSlot + 1); }
+
+function copyFact() {
+  const f = getFactForSlot(viewingSlot);
+  const txt = `📚 ${f.c}\n\n${f.t}\n\n— Curious Daily`;
+  navigator.clipboard.writeText(txt).then(() => toast('Copied to clipboard ✓'));
+}
+
+function shareFact() {
+  const f = getFactForSlot(viewingSlot);
+  if (navigator.share) {
+    navigator.share({ title: 'Curious Daily', text: f.t });
+  } else {
+    copyFact();
+  }
+}
+
+// ── ALL FACTS ──
+function renderAllFacts(query) {
+  const q = (query || '').toLowerCase().trim();
+  const container = document.getElementById('factsContent');
+  const todayIdx = getDayIndex();
+  const todayFactIdx = DAY_ORDER[todayIdx];
+
+  const filtered = FACTS.map((f,i) => ({f, i})).filter(({f}) =>
+    !q || f.t.toLowerCase().includes(q) || f.c.toLowerCase().includes(q)
+  );
+
+  if (!filtered.length) {
+    container.innerHTML = '<p style="text-align:center;padding:60px;color:var(--mid)">No results found.</p>';
+    return;
+  }
+
+  // Group by category
+  const groups = {};
+  filtered.forEach(({f,i}) => {
+    if (!groups[f.c]) groups[f.c] = [];
+    groups[f.c].push({f,i});
+  });
+
+  container.innerHTML = CATEGORY_ORDER.filter(c => groups[c]).map(cat => {
+    const items = groups[cat];
+    const themeClass = 'cat-' + (items[0].f.s);
+    return `<div class="cat-section ${themeClass}">
+      <div class="cat-section-header">
+        <span style="font-size:1.1rem">${items[0].f.e}</span>
+        <span class="cat-section-title">${cat}</span>
+        <span class="cat-count">${items.length}</span>
+      </div>
+      <div class="facts-grid">
+        ${items.map(({f,i}) => `
+          <div class="mini-card ${i===todayFactIdx?'today-card':''}" style="border-right-color:var(--accent)" onclick="jumpToFact(${i})">
+            ${i===todayFactIdx ? '<div class="mini-card-num">📅 Today\'s fact</div>' : ''}
+            <p class="mini-card-text">${f.t}</p>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function jumpToFact(factIdx) {
+  // find what slot this fact falls on (or closest)
+  const slotInOrder = DAY_ORDER.indexOf(factIdx);
+  const todaySlot = getDayIndex();
+  const offset = slotInOrder - (todaySlot % DAY_ORDER.length);
+  showView('home');
+  renderHome(todaySlot + offset);
+}
+
+function filterFacts() {
+  renderAllFacts(document.getElementById('searchInput').value);
+}
+
+// ── SETTINGS ──
+function loadSettings() {
+  const s = loadState();
+  const en = document.getElementById('remEnabled');
+  if (s.remEnabled) { en.checked = true; toggleTimeRow(); }
+  if (s.remHour !== undefined) document.getElementById('remHour').value = String(s.remHour).padStart(2,'0');
+  if (s.remMin  !== undefined) document.getElementById('remMin').value  = String(s.remMin).padStart(2,'0');
+  updateSettingsStats();
+}
+
+function toggleTimeRow() {
+  const en = document.getElementById('remEnabled').checked;
+  const tr = document.getElementById('timeRow');
+  tr.style.opacity = en ? '1' : '.35';
+  tr.style.pointerEvents = en ? 'all' : 'none';
+}
+
+function padNum(el, max) {
+  let v = Math.max(0, Math.min(max, parseInt(el.value)||0));
+  el.value = String(v).padStart(2,'0');
+}
+
+function updateReminderDisplay() {
+  const s = loadState();
+  const disp = document.getElementById('reminderDisplay');
+  if (s.remEnabled && s.remHour !== undefined) {
+    disp.textContent = `${String(s.remHour).padStart(2,'0')}:${String(s.remMin||0).padStart(2,'0')}`;
+  } else {
+    disp.textContent = 'Not set';
+  }
+}
+
+function updateSettingsStats() {
+  const s = loadState();
+  document.getElementById('sSt').textContent = s.streak || 0;
+  document.getElementById('sSn').textContent = s.seen || 0;
+}
+
+function saveSettings() {
+  const s = loadState();
+  const en = document.getElementById('remEnabled').checked;
+  const h = parseInt(document.getElementById('remHour').value) || 8;
+  const m = parseInt(document.getElementById('remMin').value) || 0;
+  s.remEnabled = en;
+  s.remHour = h;
+  s.remMin = m;
+  saveState(s);
+  updateReminderDisplay();
+  if (en && 'Notification' in window) {
+    Notification.requestPermission().then(p => {
+      if (p === 'granted') scheduleNotif(h, m);
+    });
+  }
+  toast('Settings saved ✓');
+}
+
+function scheduleNotif(h, m) {
+  const now = new Date();
+  const target = new Date(); target.setHours(h, m, 0, 0);
+  if (target <= now) target.setDate(target.getDate() + 1);
+  setTimeout(() => {
+    new Notification('Curious Daily 📚', { body: "Your daily fact is waiting!" });
+  }, target - now);
+}
+
+function resetData() {
+  if (!confirm('Reset all usage data?')) return;
+  const s = loadState();
+  delete s.streak; delete s.seen; delete s.lastVisit;
+  saveState(s);
+  renderHome();
+  updateSettingsStats();
+  toast('Data reset');
+}
+
+// ── VIEWS ──
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const nb = document.getElementById('nav-' + id);
+  if (nb) nb.classList.add('active');
+  window.scrollTo(0, 0);
+  if (id === 'allFacts') renderAllFacts(document.getElementById('searchInput').value);
+  if (id === 'settings') updateSettingsStats();
+}
+
+// ── TOAST ──
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ── INIT ──
+updateStreak();
+renderHome(getDayIndex());
+loadSettings();
+</script>
+</body>
+</html>
